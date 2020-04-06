@@ -1,9 +1,13 @@
 package com.appsdeveloperblog.app.ws.service.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +21,8 @@ import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
 import com.appsdeveloperblog.app.ws.shared.dto.Utils;
 import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
+
+import javassist.expr.NewArray;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -72,7 +78,7 @@ public class UserServiceImpl implements UserService {
 		UserEntity userEntity = userRepository.findByUserId(userId);
 
 		if (userEntity == null)
-			throw new UsernameNotFoundException(userId);
+			throw new CustomExceptionHandler(ErrorMessages.NO_RECORD_FOUND.getErrorMessage()); // this will trigger 3 rd method in AppExceptionHandler class, for different gson representation
 
 		BeanUtils.copyProperties(userEntity, userDto);
 
@@ -127,6 +133,26 @@ public class UserServiceImpl implements UserService {
 
 		userRepository.delete(userEntityByUserId);
 		
+	}
+
+	@Override
+	public List<UserDto> getUsers(int page, int limit) {
+		List<UserDto> returnValue = new ArrayList<UserDto>();
+		
+		if(page > 0) page = page - 1;
+		
+		Pageable  pageableRequst = PageRequest.of(page, limit);
+	    Page< UserEntity> userPage =	userRepository.findAll(pageableRequst);
+	    
+	    List<UserEntity> users = userPage.getContent();
+	   
+	   for (UserEntity userEntity : users) {
+		   UserDto userDto = new UserDto();
+		   BeanUtils.copyProperties(userEntity, userDto);
+		   returnValue.add(userDto);
+	     }
+
+		return returnValue;
 	}
 
 }

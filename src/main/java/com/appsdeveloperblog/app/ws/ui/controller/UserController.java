@@ -1,6 +1,9 @@
 package com.appsdeveloperblog.app.ws.ui.controller;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.websocket.server.PathParam;
 
 import org.springframework.beans.BeanUtils;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,8 +31,13 @@ import com.appsdeveloperblog.app.ws.ui.model.response.OperationStatusModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.ResponseOperationEnum;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsResponseModel;
 
+
+
 @RestController
-@RequestMapping("users") // http://localhost:8080/users
+@RequestMapping("users") // http://localhost:8080/users,
+//After context path    http://localhost:8080/mobile-app-ws/users, 
+//server.servlet.context-path=/mobile-app-ws 
+// in application.properties
 public class UserController {
 
 	@Autowired
@@ -115,6 +124,28 @@ public class UserController {
 		operationStatusModel.setOperationResult(ResponseOperationEnum.SUCCESS.name());
 		
 		return operationStatusModel;
+	}
+	
+	
+	@GetMapping(produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+	public List<UserDetailsResponseModel> getUsers(@RequestParam(value="page",defaultValue="1") int page, @RequestParam(value="limit",defaultValue="25") int limit){
+		
+		List<UserDetailsResponseModel> returnList = new ArrayList<UserDetailsResponseModel>();
+		
+		List<UserDto> usersList = userService.getUsers(page,limit);
+		
+		for (UserDto userDto : usersList) {
+			UserDetailsResponseModel userDetailsResponseModel = new UserDetailsResponseModel();
+			
+			BeanUtils.copyProperties(userDto, userDetailsResponseModel);
+			
+			returnList.add(userDetailsResponseModel);
+			
+		}
+		
+		
+		return returnList;
+		
 	}
 
 }
