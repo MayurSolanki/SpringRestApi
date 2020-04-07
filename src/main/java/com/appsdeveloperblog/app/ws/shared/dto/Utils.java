@@ -16,15 +16,25 @@ public class Utils {
 	
 	public final String generateUserId(int length) {
 		
-		StringBuilder returnValue = new StringBuilder(length);
+		 return  generateRandomString(length);
 		
-		for(int i=0;i<length;i++) {
-			returnValue.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
-			
-		}
+	}
+	
+	
+    public final String generateAddressId(int length) {
 		
-		return new String(returnValue);
+	    return  generateRandomString(length);
 		
 	}
 
+    private String generateRandomString(int length) {
+	  
+        StringBuilder returnValue = new StringBuilder(length);
+		
+		for(int i=0;i<length;i++) {
+			returnValue.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
+		}
+		
+		return new String(returnValue);
+   }
 }

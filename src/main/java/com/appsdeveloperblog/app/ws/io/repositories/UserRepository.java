@@ -1,6 +1,5 @@
 package com.appsdeveloperblog.app.ws.io.repositories;
 
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +10,7 @@ public interface UserRepository extends PagingAndSortingRepository<UserEntity,Lo
 	
 	
 	//find
-	// By
+	// By		
 	// email  <- column name
 	// user_id  <- UserId
 

@@ -1,11 +1,12 @@
 package com.appsdeveloperblog.app.ws.ui.controller;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.websocket.server.PathParam;
 
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,16 +23,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.appsdeveloperblog.app.ws.exception.UserServiceException;
+import com.appsdeveloperblog.app.ws.service.AddressService;
+import com.appsdeveloperblog.app.ws.service.AddressesService;
 import com.appsdeveloperblog.app.ws.service.UserService;
+import com.appsdeveloperblog.app.ws.shared.dto.AddressDto;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
 import com.appsdeveloperblog.app.ws.ui.model.request.RequestOperationEnum;
 import com.appsdeveloperblog.app.ws.ui.model.request.UserDetailsRequestModel;
+import com.appsdeveloperblog.app.ws.ui.model.response.AddressResponseModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
 import com.appsdeveloperblog.app.ws.ui.model.response.OperationStatusModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.ResponseOperationEnum;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsResponseModel;
-
-
 
 @RestController
 @RequestMapping("users") // http://localhost:8080/users,
@@ -43,109 +46,140 @@ public class UserController {
 	@Autowired
 	UserService userService;
 
+	@Autowired
+	AddressesService addressesService;
 	
+	@Autowired
+	AddressService addressService;
+
 //	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @GetMapping(path = "/{id}", produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}  )
+	@GetMapping(path = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public UserDetailsResponseModel getUser(@PathVariable String id) {
-		
+
 		UserDetailsResponseModel userDetailsResponseModel = new UserDetailsResponseModel();
-		
-	    UserDto userDto  = 	userService.getUserByUserId(id);
-		
+
+		UserDto userDto = userService.getUserByUserId(id);
+
 		BeanUtils.copyProperties(userDto, userDetailsResponseModel);
-		
-		
+
 		return userDetailsResponseModel;
-		
-		
+
 	}
 
-	@PostMapping(
-			consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
-			produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
-			)
-	public UserDetailsResponseModel createUser(@RequestBody UserDetailsRequestModel userDetailsRequestModel) throws Exception {
+	@PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }, produces = {
+			MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public UserDetailsResponseModel createUser(@RequestBody UserDetailsRequestModel userDetailsRequestModel)
+			throws Exception {
 
 		UserDetailsResponseModel userDetailResponseModel = new UserDetailsResponseModel();
-		
-		
+
 //  	if(userDetailsRequestModel.getFirstName().isEmpty()) throw new Exception(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage()); // change the message in error json object
-
 // 		if(userDetailsRequestModel.getFirstName().isEmpty()) throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage()); // this will trigger 1st method in AppExceptionHandler class, for different gson representation
+		if (userDetailsRequestModel.getFirstName().isEmpty())
+			throw new NullPointerException("This object is null"); // this will trigger 2 nd method in
+																	// AppExceptionHandler class
 
-		if(userDetailsRequestModel.getFirstName().isEmpty()) throw new NullPointerException("This object is null");  // this will trigger 2 nd method in AppExceptionHandler class
+//		UserDto userDto = new UserDto();
+//		BeanUtils.copyProperties(userDetailsRequestModel, userDto);
 
-		
-		UserDto userDto = new UserDto();
-
-		BeanUtils.copyProperties(userDetailsRequestModel, userDto);
+		ModelMapper modelMapper = new ModelMapper();
+		UserDto userDto = modelMapper.map(userDetailsRequestModel, UserDto.class);
 
 		UserDto createdUserDto = userService.createUser(userDto);
 
-		BeanUtils.copyProperties(createdUserDto, userDetailResponseModel);
+//		BeanUtils.copyProperties(createdUserDto, userDetailResponseModel);
+		userDetailResponseModel = modelMapper.map(createdUserDto, UserDetailsResponseModel.class);
 
 		return userDetailResponseModel;
 	}
 
-	@PutMapping(
-			path ="/{id}",
-			consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
-			produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
-			)
-	public UserDetailsResponseModel updateUser(@PathVariable String id, @RequestBody UserDetailsRequestModel userDetailsRequestModel) {
-		
-		
+	@PutMapping(path = "/{id}", consumes = { MediaType.APPLICATION_XML_VALUE,
+			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
+					MediaType.APPLICATION_JSON_VALUE })
+	public UserDetailsResponseModel updateUser(@PathVariable String id,
+			@RequestBody UserDetailsRequestModel userDetailsRequestModel) {
+
 		UserDto userDto = new UserDto();
 		BeanUtils.copyProperties(userDetailsRequestModel, userDto);
-		
-		
-	   
-		UserDto updatedUserDto = userService.updateUser(id,userDto);
-		
-		
-		UserDetailsResponseModel userDetailsResponseModel = new UserDetailsResponseModel(); 
+
+		UserDto updatedUserDto = userService.updateUser(id, userDto);
+
+		UserDetailsResponseModel userDetailsResponseModel = new UserDetailsResponseModel();
 		BeanUtils.copyProperties(updatedUserDto, userDetailsResponseModel);
 
-		
-		
 		return userDetailsResponseModel;
 	}
 
-	@DeleteMapping(
-			path ="/{id}",
-			produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-	// path param vs path variable, https://medium.com/1developer/spring-requestparam-vs-queryparam-vs-pathvariable-vs-pathparam-7c5655e541ad
+	@DeleteMapping(path = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	// path param vs path variable,
+	// https://medium.com/1developer/spring-requestparam-vs-queryparam-vs-pathvariable-vs-pathparam-7c5655e541ad
 	public OperationStatusModel deleteUser(@PathVariable String id) {
-		
+
 		userService.deleteUser(id);
-		
+
 		OperationStatusModel operationStatusModel = new OperationStatusModel();
 		operationStatusModel.setOperationName(RequestOperationEnum.DELETE.name());
 		operationStatusModel.setOperationResult(ResponseOperationEnum.SUCCESS.name());
-		
+
 		return operationStatusModel;
 	}
-	
-	
-	@GetMapping(produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-	public List<UserDetailsResponseModel> getUsers(@RequestParam(value="page",defaultValue="1") int page, @RequestParam(value="limit",defaultValue="25") int limit){
-		
+
+	@GetMapping(produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public List<UserDetailsResponseModel> getUsers(@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "limit", defaultValue = "25") int limit) {
+
 		List<UserDetailsResponseModel> returnList = new ArrayList<UserDetailsResponseModel>();
-		
-		List<UserDto> usersList = userService.getUsers(page,limit);
-		
+
+		List<UserDto> usersList = userService.getUsers(page, limit);
+
 		for (UserDto userDto : usersList) {
 			UserDetailsResponseModel userDetailsResponseModel = new UserDetailsResponseModel();
-			
+
 			BeanUtils.copyProperties(userDto, userDetailsResponseModel);
-			
+
 			returnList.add(userDetailsResponseModel);
-			
+
 		}
-		
-		
+
 		return returnList;
+
+	}
+
+	// https://localhost/mobile-app-ws/users/{userId}/addresses
+	@GetMapping(path = "/{userId}/addresses", produces = { MediaType.APPLICATION_XML_VALUE,
+			MediaType.APPLICATION_JSON_VALUE })
+	public List<AddressResponseModel> getUserAddresses(@PathVariable String userId) {
+
+		List<AddressResponseModel> returnList = new ArrayList<AddressResponseModel>();
+
+		List<AddressDto> addressesDto = addressesService.getUserAddresses(userId);
+
+		if (addressesDto != null && !addressesDto.isEmpty()) {
+			java.lang.reflect.Type listType = new TypeToken<List<AddressResponseModel>>() {
+			}.getType();
+			returnList = new ModelMapper().map(addressesDto, listType);
+		}
+
+		return returnList;
+
+	}
+
+	// https://localhost/mobile-app-ws/users/{userId}/addresses
+	@GetMapping(path = "/{userId}/addresses/{addressId}", produces = { MediaType.APPLICATION_XML_VALUE,
+			MediaType.APPLICATION_JSON_VALUE })
+	public AddressResponseModel getUserAddress(@PathVariable String addressId) {
 		
+
+  
+		 AddressDto addressDto   = addressService.getAddressDetail(addressId);
+
+		
+		 ModelMapper modelMapper = new ModelMapper();
+		 AddressResponseModel addressResponseModel = modelMapper.map(addressDto, AddressResponseModel.class);
+		 
+		 
+		return addressResponseModel;
+
 	}
 
 }

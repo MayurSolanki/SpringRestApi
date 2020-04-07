@@ -33,12 +33,14 @@ public class AuthorizationFilter extends BasicAuthenticationFilter{
 		}
 		
 		
+		
+		
 		UsernamePasswordAuthenticationToken authenticationToken = getAuthentication(httpServletRequest);
 		SecurityContextHolder.getContext().setAuthentication(authenticationToken);		
 		filterChain.doFilter(httpServletRequest, httpServletResponse);
 		
 	}
-
+	
 	private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest httpServletRequest) {
 
 		String token = httpServletRequest.getHeader(SecurityConstants.HEADER_STRING);

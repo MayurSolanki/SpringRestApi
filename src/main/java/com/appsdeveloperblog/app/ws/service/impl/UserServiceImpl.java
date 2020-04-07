@@ -3,6 +3,7 @@ package com.appsdeveloperblog.app.ws.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import com.appsdeveloperblog.app.ws.exception.CustomExceptionHandler;
 import com.appsdeveloperblog.app.ws.io.entity.UserEntity;
 import com.appsdeveloperblog.app.ws.io.repositories.UserRepository;
 import com.appsdeveloperblog.app.ws.service.UserService;
+import com.appsdeveloperblog.app.ws.shared.dto.AddressDto;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
 import com.appsdeveloperblog.app.ws.shared.dto.Utils;
 import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
@@ -44,18 +46,35 @@ public class UserServiceImpl implements UserService {
 			throw new RuntimeException("Record already exist !!!");
 		}
 
-		UserEntity userEnity = new UserEntity();
+		
+		for(int i = 0; i<userDto.getAddresses().size(); i++) {
+			
+			AddressDto addressDto = userDto.getAddresses().get(i);
+			
+			addressDto.setAddressId(utils.generateAddressId(30));
+			addressDto.setUserDetails(userDto);
+			
+			userDto.getAddresses().set(i, addressDto);
+		}
+		
+		
+//		UserEntity userEnity = new UserEntity();
+//		BeanUtils.copyProperties(userDto, userEnity);
+		
+		ModelMapper modelMapper = new ModelMapper();
+		UserEntity userEnity = modelMapper.map(userDto, UserEntity.class);
 
-		BeanUtils.copyProperties(userDto, userEnity);
-
-		userEnity.setEncryptedPassword(cBcryptPasswordEncoder.encode(userDto.getPassword()));
 		userEnity.setUserId(utils.generateUserId(30));
+		userEnity.setEncryptedPassword(cBcryptPasswordEncoder.encode(userDto.getPassword()));
+
 
 		UserEntity savedUserEntityInDb = userRepository.save(userEnity);
 
-		UserDto returnUserDto = new UserDto();
-
-		BeanUtils.copyProperties(savedUserEntityInDb, returnUserDto);
+		
+//		UserDto returnUserDto = new UserDto();
+//		BeanUtils.copyProperties(savedUserEntityInDb, returnUserDto); 
+		
+		UserDto returnUserDto = modelMapper.map(savedUserEntityInDb,UserDto.class);
 
 		return returnUserDto;
 	}
