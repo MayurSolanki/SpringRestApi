@@ -20,7 +20,10 @@ public interface UserService extends UserDetailsService{
 	UserDto getUserByUserId(String id);
 	
 	List<UserDto> getUsers(int page, int limit);
+	
+	boolean requestPasswordReset(String email);
 
+	List<UserDto> findUsersByFirstName(String firstName);
 	
 	
 	

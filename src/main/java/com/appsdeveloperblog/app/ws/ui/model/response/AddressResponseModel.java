@@ -11,6 +11,9 @@ public class AddressResponseModel {
 	private String postalCode;
 	private String type;
 	
+	private String userId;
+	
+	
 	public String getAddressId() {
 		return addressId;
 	}
@@ -47,6 +50,16 @@ public class AddressResponseModel {
 	public void setType(String type) {
 		this.type = type;
 	}
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	
+	
+	
+	
     
  
 	

@@ -9,6 +9,7 @@ public class AddressDto {
 	private String streetName;
 	private String postalCode;
 	private String type;
+	private String userId;
     private UserDto userDetails;
     
     
@@ -54,6 +55,14 @@ public class AddressDto {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	
+	
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	public UserDto getUserDetails() {
 		return userDetails;

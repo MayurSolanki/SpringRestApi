@@ -33,12 +33,16 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		.authorizeRequests()   // authorization for SIgn up method , else required authentication
       	.antMatchers(HttpMethod.POST,SecurityConstants.SIGN_UP_URL) //passsword security , HttpMethod.POST,
       	.permitAll()  // all permission to post i.e sign up
+      	.antMatchers(SecurityConstants.H2_CONSOLE)
+      	.permitAll()  
     	.anyRequest().authenticated() // any other request should be authenticated
       	.and()
       	.addFilter(getAuthenticationFilter())
       	.addFilter(new AuthorizationFilter(authenticationManager()))
 		.sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);  // make REST api stateless
+		
+		http.headers().frameOptions().disable();  // disable to load our URL in browser frame, For H2 
 	}
 	
 	// encrypt/encode password

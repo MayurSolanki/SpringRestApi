@@ -174,4 +174,39 @@ public class UserServiceImpl implements UserService {
 		return returnValue;
 	}
 
+	@Override
+	public boolean requestPasswordReset(String email) {
+
+		boolean returnValue = false;
+		
+		UserEntity userEntity = userRepository.findByEmail(email);
+		
+		if(userEntity == null) {
+			return	returnValue;
+		}
+		
+		return returnValue;
+	}
+
+	@Override
+	public List<UserDto> findUsersByFirstName(String firstName) {
+
+		 List<UserDto> userDtos = new ArrayList<UserDto>();
+		 ModelMapper modelMapper = new ModelMapper();
+		 
+		 List<UserEntity> userEntities =   userRepository.findUserByFirstName(firstName);
+		 
+		 for (UserEntity userEntity : userEntities) {
+			 
+			 UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+			 
+			 userDtos.add(userDto);
+							
+	       }
+		 
+		
+		
+		return userDtos;
+	}
+
 }

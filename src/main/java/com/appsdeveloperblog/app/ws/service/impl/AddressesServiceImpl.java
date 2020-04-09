@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.EnableLoadTimeWeaving;
 import org.springframework.stereotype.Service;
 
 import com.appsdeveloperblog.app.ws.io.entity.AddressEntity;
@@ -39,6 +40,31 @@ public class AddressesServiceImpl implements AddressesService {
 		}
 
 		return returnValue;
+	}
+
+	@Override
+	public List<AddressDto> getAddresses() {
+		
+		List<AddressEntity> listAddressesEntity = new ArrayList<AddressEntity>();
+		List<AddressDto> listAddressesDto = new ArrayList<AddressDto>();
+		ModelMapper modelMapper = new ModelMapper();
+
+		 
+		listAddressesEntity =   (List<AddressEntity>) addressRepository.findAll();
+
+
+		for (AddressEntity addressEntity : listAddressesEntity) {
+			if(addressEntity.getCity().equalsIgnoreCase("Ahmedabad")) {
+				addressEntity.setCity("amdavad");
+				
+//				addressEntity.getUserDetails().getUserId();
+			}
+			
+			listAddressesDto.add(modelMapper.map(addressEntity, AddressDto.class));
+		}
+		
+		
+		return listAddressesDto;
 	}
 
 }

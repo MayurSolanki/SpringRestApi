@@ -28,6 +28,7 @@ import com.appsdeveloperblog.app.ws.service.AddressesService;
 import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.dto.AddressDto;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
+import com.appsdeveloperblog.app.ws.ui.model.request.PasswordResetRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.request.RequestOperationEnum;
 import com.appsdeveloperblog.app.ws.ui.model.request.UserDetailsRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.AddressResponseModel;
@@ -36,8 +37,10 @@ import com.appsdeveloperblog.app.ws.ui.model.response.OperationStatusModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.ResponseOperationEnum;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsResponseModel;
 
+
 @RestController
 @RequestMapping("users") // http://localhost:8080/users,
+
 //After context path    http://localhost:8080/mobile-app-ws/users, 
 //server.servlet.context-path=/mobile-app-ws 
 // in application.properties
@@ -48,7 +51,7 @@ public class UserController {
 
 	@Autowired
 	AddressesService addressesService;
-	
+
 	@Autowired
 	AddressService addressService;
 
@@ -92,6 +95,7 @@ public class UserController {
 
 		return userDetailResponseModel;
 	}
+	
 
 	@PutMapping(path = "/{id}", consumes = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_XML_VALUE,
@@ -109,6 +113,7 @@ public class UserController {
 
 		return userDetailsResponseModel;
 	}
+	
 
 	@DeleteMapping(path = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	// path param vs path variable,
@@ -168,18 +173,75 @@ public class UserController {
 	@GetMapping(path = "/{userId}/addresses/{addressId}", produces = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE })
 	public AddressResponseModel getUserAddress(@PathVariable String addressId) {
-		
 
-  
-		 AddressDto addressDto   = addressService.getAddressDetail(addressId);
+		AddressDto addressDto = addressService.getAddressDetail(addressId);
 
-		
-		 ModelMapper modelMapper = new ModelMapper();
-		 AddressResponseModel addressResponseModel = modelMapper.map(addressDto, AddressResponseModel.class);
-		 
-		 
+		ModelMapper modelMapper = new ModelMapper();
+		AddressResponseModel addressResponseModel = modelMapper.map(addressDto, AddressResponseModel.class);
+
 		return addressResponseModel;
-
+	}
+	
+	@GetMapping(path="/addresses", produces = { MediaType.APPLICATION_XML_VALUE,
+			MediaType.APPLICATION_JSON_VALUE })
+	public List<AddressResponseModel> getAddresses(){
+		
+		List<AddressResponseModel> returnAddressesList = new ArrayList<AddressResponseModel>();
+		ModelMapper modelMapper = new ModelMapper();
+		List<AddressDto> list    = addressesService.getAddresses();
+		
+		for (AddressDto addressDto : list) {
+		   AddressResponseModel addressResponseModel = 	modelMapper.map(addressDto, AddressResponseModel.class);
+		   
+		   returnAddressesList.add(addressResponseModel);
+		}
+		
+		
+		return returnAddressesList;
+		
+	}
+	
+//	@RequestMapping(value = "/users-by-first-name}", method = RequestMethod.GET)
+	@GetMapping(path = "users-by-first-name",produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+	public List<UserDetailsResponseModel> getUsersByFirstName(@RequestParam String firstName){
+		
+		List<UserDetailsResponseModel> returnList = new ArrayList<UserDetailsResponseModel>();
+		
+		List<UserDto> userList =    userService.findUsersByFirstName(firstName);
+		
+		ModelMapper modelMapper = new ModelMapper();
+		
+		for (UserDto userDto : userList) {
+		   UserDetailsResponseModel userDetailsResponseModel =	modelMapper.map(userDto, UserDetailsResponseModel.class);
+		   returnList.add(userDetailsResponseModel);	
+		} 
+		
+		
+		return returnList;
+		
+	}
+	
+	
+	
+	
+	
+	@GetMapping(path="/password-reset-request", produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
+	public OperationStatusModel requestPasswordReset(@RequestBody PasswordResetRequestModel passwordResetRequestModel) {
+		
+		OperationStatusModel returnOperationStatusModel = new OperationStatusModel();
+		
+		boolean operationResult =  userService.requestPasswordReset(passwordResetRequestModel.getEmail());
+		
+		returnOperationStatusModel.setOperationName(RequestOperationEnum.REQUEST_PASSWORD_RESET.name());
+		returnOperationStatusModel.setOperationResult(ResponseOperationEnum.ERROR.name());
+		
+		
+		if(operationResult) {
+			returnOperationStatusModel.setOperationResult(ResponseOperationEnum.SUCCESS.name());
+		}
+		
+		return returnOperationStatusModel;
+		
 	}
 
 }
