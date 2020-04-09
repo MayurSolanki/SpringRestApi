@@ -23,10 +23,11 @@ public interface UserRepository extends PagingAndSortingRepository<UserEntity,Lo
 	UserEntity findByEmail(String email);
 
 	UserEntity findByUserId(String userId);
+
+//  ======================================= Native SQL Query ===========================================================	
 	
 //	@Query(value = "SELECT * FROM `users` WHERE users.first_name = ?1", nativeQuery = true)
 //	List<UserEntity> findUserByFirstName(String firstName);      // Positional paramater
-	
 	
 	
 	@Query(value = "SELECT * FROM `users` WHERE users.first_name = :firstName", nativeQuery = true)
@@ -46,4 +47,12 @@ public interface UserRepository extends PagingAndSortingRepository<UserEntity,Lo
 	void UpdateUserEmailVerificationStatus(@Param("emailVerficationStatus") boolean emailVerification, @Param("userId") String userId);
 	
 	
+
+//  ======================================= JPQL (Java Persistence Query Language) ===========================================================	
+	
+	@Query("select user from UserEntity user where user.userId=:userId")
+	UserEntity findUserByUserId(@Param("userId") String userId);
+	
+	@Query("select user.firstname, user.lastname from UserEntity user where user.userId = :userId")  // get selected column from Table
+	List<Object[]> getUserEntityFullNameById(@Param("userId") String userId);
 }
