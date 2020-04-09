@@ -5,11 +5,13 @@ import java.util.List;
 
 import javax.websocket.server.PathParam;
 
+import org.aspectj.weaver.tools.Trace;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,10 +23,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.appsdeveloperblog.app.ws.exception.UserServiceException;
 import com.appsdeveloperblog.app.ws.service.AddressService;
 import com.appsdeveloperblog.app.ws.service.AddressesService;
+import com.appsdeveloperblog.app.ws.service.FileStorageService;
 import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.dto.AddressDto;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
@@ -35,11 +40,13 @@ import com.appsdeveloperblog.app.ws.ui.model.response.AddressResponseModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
 import com.appsdeveloperblog.app.ws.ui.model.response.OperationStatusModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.ResponseOperationEnum;
+import com.appsdeveloperblog.app.ws.ui.model.response.UploadFileResponse;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsResponseModel;
 
 
 @RestController
 @RequestMapping("users") // http://localhost:8080/users,
+//@CrossOrigin(origins = "*")  // allow all origin
 
 //After context path    http://localhost:8080/mobile-app-ws/users, 
 //server.servlet.context-path=/mobile-app-ws 
@@ -54,6 +61,22 @@ public class UserController {
 
 	@Autowired
 	AddressService addressService;
+	
+	@Autowired
+    FileStorageService fileStorageService;
+    
+    @PostMapping("/uploadFile")
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
+        String fileName = fileStorageService.storeFile(file);
+
+        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/downloadFile/")
+                .path(fileName)
+                .toUriString();
+
+        return new UploadFileResponse(fileName, fileDownloadUri, file.getContentType(), file.getSize());
+    }
+	
 
 //	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	@GetMapping(path = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
@@ -129,7 +152,11 @@ public class UserController {
 		return operationStatusModel;
 	}
 
-	@GetMapping(produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	@GetMapping(produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+//	@CrossOrigin(origins = "*")  // allow all origin
+//	@CrossOrigin(origins = "http://localhost:8083")  // allow from specific origin with port
+//	@CrossOrigin(origins = {"http://localhost:8083","http://myblog.com:8084"})  // allow from list of origin
+
 	public List<UserDetailsResponseModel> getUsers(@RequestParam(value = "page", defaultValue = "1") int page,
 			@RequestParam(value = "limit", defaultValue = "25") int limit) {
 
@@ -172,6 +199,7 @@ public class UserController {
 	// https://localhost/mobile-app-ws/users/{userId}/addresses
 	@GetMapping(path = "/{userId}/addresses/{addressId}", produces = { MediaType.APPLICATION_XML_VALUE,
 			MediaType.APPLICATION_JSON_VALUE })
+	
 	public AddressResponseModel getUserAddress(@PathVariable String addressId) {
 
 		AddressDto addressDto = addressService.getAddressDetail(addressId);

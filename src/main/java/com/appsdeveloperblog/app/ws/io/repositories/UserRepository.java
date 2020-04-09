@@ -50,9 +50,9 @@ public interface UserRepository extends PagingAndSortingRepository<UserEntity,Lo
 
 //  ======================================= JPQL (Java Persistence Query Language) ===========================================================	
 	
-	@Query("select user from UserEntity user where user.userId=:userId")
+	@Query("select user from UserEntity user where user.userId = :userId")
 	UserEntity findUserByUserId(@Param("userId") String userId);
 	
-	@Query("select user.firstname, user.lastname from UserEntity user where user.userId = :userId")  // get selected column from Table
+	@Query("select user.firstName, user.lastName from UserEntity user where user.userId = :userId")  // get selected column from Table
 	List<Object[]> getUserEntityFullNameById(@Param("userId") String userId);
 }

@@ -1,9 +1,16 @@
 package com.appsdeveloperblog.app.ws.shared.dto;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.Random;
 
 import org.springframework.stereotype.Component;
+
+import com.appsdeveloperblog.app.ws.FileStorageProperties;
+import com.appsdeveloperblog.app.ws.exception.CustomExceptionHandler;
+import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
 
 @Component
 public class Utils {
@@ -37,4 +44,9 @@ public class Utils {
 		
 		return new String(returnValue);
    }
+    
+    
+
+    
+    
 }
