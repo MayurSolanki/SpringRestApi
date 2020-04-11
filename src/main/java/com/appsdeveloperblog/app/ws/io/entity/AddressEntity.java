@@ -13,13 +13,13 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
+
 
 @Entity(name="addresses")
 public class AddressEntity implements Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 7809200551672852690L;
 	
 	@Id
@@ -43,6 +43,7 @@ public class AddressEntity implements Serializable {
 	
 	@Column(length=10,nullable= false)
 	private String type;
+	
 	
 	
 	@ManyToOne

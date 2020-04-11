@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -44,7 +45,14 @@ public class UserEntity implements Serializable{
 	private Boolean emailVerificationStatus =false;
 	
 	@OneToMany(mappedBy="userDetails", cascade=CascadeType.ALL, fetch = FetchType.LAZY)  // mapped by -> check name in UserEntity class, i.e "userEntity"
-	private List<AddressEntity> addresses;
+	private List<AddressEntity> addresses;  // Table to which relation, child table relation
+	
+	
+	@OneToOne(fetch = FetchType.LAZY,
+            cascade =  CascadeType.ALL,
+            mappedBy = "userDetails")
+    private UserProfileImageEntity userProfileImageEntity;
+
 
 	public long getId() {
 		return id;

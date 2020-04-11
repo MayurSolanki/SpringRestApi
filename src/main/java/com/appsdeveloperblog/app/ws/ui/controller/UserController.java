@@ -1,16 +1,24 @@
 package com.appsdeveloperblog.app.ws.ui.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.websocket.server.PathParam;
 
 import org.aspectj.weaver.tools.Trace;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +41,7 @@ import com.appsdeveloperblog.app.ws.service.FileStorageService;
 import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.dto.AddressDto;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
+import com.appsdeveloperblog.app.ws.shared.dto.UserProfileImageDto;
 import com.appsdeveloperblog.app.ws.ui.model.request.PasswordResetRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.request.RequestOperationEnum;
 import com.appsdeveloperblog.app.ws.ui.model.request.UserDetailsRequestModel;
@@ -40,7 +49,7 @@ import com.appsdeveloperblog.app.ws.ui.model.response.AddressResponseModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
 import com.appsdeveloperblog.app.ws.ui.model.response.OperationStatusModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.ResponseOperationEnum;
-import com.appsdeveloperblog.app.ws.ui.model.response.UploadFileResponse;
+import com.appsdeveloperblog.app.ws.ui.model.response.UserProfileImageResponse;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsResponseModel;
 
 
@@ -52,6 +61,9 @@ import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsResponseModel;
 //server.servlet.context-path=/mobile-app-ws 
 // in application.properties
 public class UserController {
+	
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
 
 	@Autowired
 	UserService userService;
@@ -65,17 +77,46 @@ public class UserController {
 	@Autowired
     FileStorageService fileStorageService;
     
-    @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-        String fileName = fileStorageService.storeFile(file);
+    @PostMapping("/uploadFile/{userId}")
+    public UserProfileImageResponse uploadFile(@RequestParam("file") MultipartFile file ,@PathVariable String userId) {
+    	
+    	UserProfileImageDto userProfileImageDto  = fileStorageService.storeFile(file,userId);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/downloadFile/")
-                .path(fileName)
+                .path(userProfileImageDto.getUserProfileImageUrl())
                 .toUriString();
+        
+        
+        
 
-        return new UploadFileResponse(fileName, fileDownloadUri, file.getContentType(), file.getSize());
+        return new UserProfileImageResponse(userProfileImageDto.getUserDetails().getUserId(),userProfileImageDto.getUserProfileImageUrl(), fileDownloadUri, file.getContentType(), file.getSize());
     }
+    
+    @GetMapping("/downloadFile/{fileName:.+}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName,  HttpServletRequest request) {
+        // Load file as Resource
+        Resource resource = fileStorageService.loadFileAsResource(fileName);
+
+        // Try to determine file's content type
+        String contentType = null;
+        try {
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            logger.info("Could not determine file type.");
+        }
+
+        // Fallback to the default content type if type could not be determined
+        if(contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
 	
 
 //	@RequestMapping(value = "/{id}", method = RequestMethod.GET)

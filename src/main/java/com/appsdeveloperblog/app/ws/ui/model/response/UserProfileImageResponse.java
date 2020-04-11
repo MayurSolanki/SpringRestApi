@@ -1,17 +1,34 @@
 package com.appsdeveloperblog.app.ws.ui.model.response;
 
-public class UploadFileResponse {
+public class UserProfileImageResponse {
+	private String userId;
     private String fileName;
     private String fileDownloadUri;
     private String fileType;
     private long size;
 
-    public UploadFileResponse(String fileName, String fileDownloadUri, String fileType, long size) {
-        this.fileName = fileName;
-        this.fileDownloadUri = fileDownloadUri;
-        this.fileType = fileType;
-        this.size = size;
-    }
+ 
+	public String getUserId() {
+		return userId;
+	}
+
+
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+
+
+	public UserProfileImageResponse(String userId, String fileName, String fileDownloadUri, String fileType,long size) {
+		this.userId = userId;
+		this.fileName = fileName;
+		this.fileDownloadUri = fileDownloadUri;
+		this.fileType = fileType;
+		this.size = size;
+	}
+
+
 
 	public String getFileName() {
 		return fileName;
