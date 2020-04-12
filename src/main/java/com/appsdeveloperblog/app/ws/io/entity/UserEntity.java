@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -44,6 +46,8 @@ public class UserEntity implements Serializable{
 	@Column(nullable=false,columnDefinition="boolean default false")
 	private Boolean emailVerificationStatus =false;
 	
+	
+	
 	@OneToMany(mappedBy="userDetails", cascade=CascadeType.ALL, fetch = FetchType.LAZY)  // mapped by -> check name in UserEntity class, i.e "userEntity"
 	private List<AddressEntity> addresses;  // Table to which relation, child table relation
 	
@@ -52,8 +56,13 @@ public class UserEntity implements Serializable{
             cascade =  CascadeType.ALL,
             mappedBy = "userDetails")
     private UserProfileImageEntity userProfileImageEntity;
-
-
+	
+	
+	@ManyToOne      //  TODO:  REMEMBER : No cascade type in many to one relationship in child
+    @JoinColumn(name="department_id")
+	DepartmentEntity department;
+	
+	
 	public long getId() {
 		return id;
 	}
@@ -125,6 +134,24 @@ public class UserEntity implements Serializable{
 	public void setAddresses(List<AddressEntity> addresses) {
 		this.addresses = addresses;
 	}
+
+	public UserProfileImageEntity getUserProfileImageEntity() {
+		return userProfileImageEntity;
+	}
+
+	public void setUserProfileImageEntity(UserProfileImageEntity userProfileImageEntity) {
+		this.userProfileImageEntity = userProfileImageEntity;
+	}
+
+	public DepartmentEntity getDepartmentRequestModel() {
+		return department;
+	}
+
+	public void setDepartmentRequestModel(DepartmentEntity departmentRequestModel) {
+		this.department = departmentRequestModel;
+	}
+
+	
 	
 	
 	

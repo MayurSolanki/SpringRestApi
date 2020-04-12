@@ -60,6 +60,7 @@ import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsResponseModel;
 //After context path    http://localhost:8080/mobile-app-ws/users, 
 //server.servlet.context-path=/mobile-app-ws 
 // in application.properties
+
 public class UserController {
 	
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -289,6 +290,7 @@ public class UserController {
 		return returnList;
 		
 	}
+	
 	
 	
 	

@@ -2,12 +2,15 @@ package com.appsdeveloperblog.app.ws.ui.model.response;
 
 import java.util.List;
 
+import com.appsdeveloperblog.app.ws.ui.model.request.DepartmentRequestModel;
+
 public class UserDetailsResponseModel {
 
 	private String userId;
 	private String firstName;
 	private String lastName;
 	private String email;
+	private DepartmentResponseModel department;
 	private List<AddressResponseModel> addresses;
 	
 	
@@ -34,6 +37,13 @@ public class UserDetailsResponseModel {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public DepartmentResponseModel getDepartment() {
+		return department;
+	}
+	public void setDepartment(DepartmentResponseModel department) {
+		this.department = department;
 	}
 	public List<AddressResponseModel> getAddresses() {
 		return addresses;

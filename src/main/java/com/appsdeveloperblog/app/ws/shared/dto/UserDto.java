@@ -14,6 +14,7 @@ public class UserDto {
 	private String encryptedPassword;
 	private String emailVerificationToken;
 	private Boolean emailVerificationStatus =false;
+	private DepartmentDto departmentRequestModel;
 	private List<AddressDto> addresses;
 
 	
@@ -70,6 +71,15 @@ public class UserDto {
 	}
 	public void setEmailVerificationStatus(Boolean emailVerificationStatus) {
 		this.emailVerificationStatus = emailVerificationStatus;
+	}
+	
+	
+	
+	public DepartmentDto getDepartmentRequestModel() {
+		return departmentRequestModel;
+	}
+	public void setDepartmentRequestModel(DepartmentDto departmentRequestModel) {
+		this.departmentRequestModel = departmentRequestModel;
 	}
 	public List<AddressDto> getAddresses() {
 		return addresses;

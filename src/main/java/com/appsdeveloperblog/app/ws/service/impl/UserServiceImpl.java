@@ -16,10 +16,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.appsdeveloperblog.app.ws.exception.CustomExceptionHandler;
+import com.appsdeveloperblog.app.ws.io.entity.DepartmentEntity;
 import com.appsdeveloperblog.app.ws.io.entity.UserEntity;
+import com.appsdeveloperblog.app.ws.io.repositories.DepartmentRepository;
 import com.appsdeveloperblog.app.ws.io.repositories.UserRepository;
 import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.dto.AddressDto;
+import com.appsdeveloperblog.app.ws.shared.dto.DepartmentDto;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
 import com.appsdeveloperblog.app.ws.shared.dto.Utils;
 import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
@@ -28,6 +31,7 @@ import javassist.expr.NewArray;
 
 @Service
 public class UserServiceImpl implements UserService {
+	
 
 	@Autowired
 	UserRepository userRepository;
@@ -38,15 +42,26 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	BCryptPasswordEncoder cBcryptPasswordEncoder;
 	
+	@Autowired
+	DepartmentRepository departmentRepository;
 	
 
 	@Override
 	public UserDto createUser(UserDto userDto) {
+		
+	    ModelMapper modelMapper = new ModelMapper();
+
 
 //         check in db, wheather email exist or not, see findBy (keyword)
 		if (userRepository.findByEmail(userDto.getEmail()) != null) {
 			throw new RuntimeException("Record already exist !!!");
 		}
+		
+//		if(userDto.getDepartmentDto() == null) {
+//			throw new CustomExceptionHandler(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage()); // this will trigger 3 rd method in AppExceptionHandler class, for different gson representation
+//
+//		}
+		
 
 		
 		for(int i = 0; i<userDto.getAddresses().size(); i++) {
@@ -60,10 +75,24 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		
+		  
+			
+			DepartmentEntity departmentEntity =  departmentRepository.findByDepartmentName(userDto.getDepartmentRequestModel().getDepartmentName());
+		
+		 
+			departmentEntity.setDepartmentId(utils.generateAddressId(30));
+			DepartmentDto departmentDto = modelMapper.map(departmentEntity, DepartmentDto.class);
+		 
+		 
+		    userDto.setDepartmentRequestModel(departmentDto);
+
+		
+		
+		
+		
 //		UserEntity userEnity = new UserEntity();
 //		BeanUtils.copyProperties(userDto, userEnity);
 		
-		ModelMapper modelMapper = new ModelMapper();
 		UserEntity userEnity = modelMapper.map(userDto, UserEntity.class);
 
 		userEnity.setUserId(utils.generateUserId(30));
