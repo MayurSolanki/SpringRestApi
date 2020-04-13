@@ -1,8 +1,13 @@
 package com.appsdeveloperblog.app.ws.ui.model.response;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import com.appsdeveloperblog.app.ws.ui.model.request.DepartmentRequestModel;
+import com.appsdeveloperblog.app.ws.io.entity.CoursesEntity;
+import com.appsdeveloperblog.app.ws.ui.model.request.CourseRequestModel;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 public class UserDetailsResponseModel {
 
@@ -10,9 +15,15 @@ public class UserDetailsResponseModel {
 	private String firstName;
 	private String lastName;
 	private String email;
+	
+//	@JsonProperty("departmentInformation")    // Set this if you want to accept json object with custom name otherwise name will be according to dto poperty
 	private DepartmentResponseModel department;
 	private List<AddressResponseModel> addresses;
 	
+//	private List<CourseRequestModel> courses;
+	private Set<CoursesEntity> courses = new HashSet<>();
+
+
 	
 	public String getUserId() {
 		return userId;
@@ -39,6 +50,8 @@ public class UserDetailsResponseModel {
 		this.email = email;
 	}
 	
+	
+	
 	public DepartmentResponseModel getDepartment() {
 		return department;
 	}
@@ -50,6 +63,18 @@ public class UserDetailsResponseModel {
 	}
 	public void setAddresses(List<AddressResponseModel> addresses) {
 		this.addresses = addresses;
+	}
+//	public List<CourseRequestModel> getCourses() {
+//		return courses;
+//	}
+//	public void setCourses(List<CourseRequestModel> courses) {
+//		this.courses = courses;
+//	}
+	public Set<CoursesEntity> getCourses() {
+		return courses;
+	}
+	public void setCourses(Set<CoursesEntity> courses) {
+		this.courses = courses;
 	}
 	
 	

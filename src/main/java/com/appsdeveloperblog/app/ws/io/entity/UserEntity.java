@@ -1,7 +1,10 @@
 package com.appsdeveloperblog.app.ws.io.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +13,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -62,6 +67,22 @@ public class UserEntity implements Serializable{
     @JoinColumn(name="department_id")
 	DepartmentEntity department;
 	
+	
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinTable(name = "users_courses",
+    joinColumns = {
+            @JoinColumn(name = "users_id", referencedColumnName = "id",
+                   nullable = false, updatable = false)},
+    inverseJoinColumns = {
+            @JoinColumn(name = "course_id", referencedColumnName = "id",
+                    nullable = false, updatable = false)})
+	private Set<CoursesEntity> courses = new HashSet<>();
+	
+	
+
+
+//    private List<AddressEntity> courses = new ArrayList<AddressEntity>();
+
 	
 	public long getId() {
 		return id;
@@ -143,14 +164,39 @@ public class UserEntity implements Serializable{
 		this.userProfileImageEntity = userProfileImageEntity;
 	}
 
-	public DepartmentEntity getDepartmentRequestModel() {
+	
+
+	public DepartmentEntity getDepartment() {
 		return department;
 	}
 
-	public void setDepartmentRequestModel(DepartmentEntity departmentRequestModel) {
-		this.department = departmentRequestModel;
+	public void setDepartment(DepartmentEntity department) {
+		this.department = department;
 	}
 
+	public Set<CoursesEntity> getCourses() {
+		return courses;
+	}
+
+	public void setCourses(Set<CoursesEntity> courses) {
+		this.courses = courses;
+	}
+
+
+
+//	public List<AddressEntity> getCourses() {
+//		return courses;
+//	}
+//
+//	public void setCourses(List<AddressEntity> courses) {
+//		this.courses = courses;
+//	}
+
+	
+	
+	
+
+	
 	
 	
 	

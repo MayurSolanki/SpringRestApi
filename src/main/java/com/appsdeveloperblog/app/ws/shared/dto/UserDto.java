@@ -1,10 +1,13 @@
 package com.appsdeveloperblog.app.ws.shared.dto;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import com.appsdeveloperblog.app.ws.io.entity.CoursesEntity;
 
 public class UserDto {
 	
-	private static final long serialVersionUID =4865903039190150223L;
 	private long id;
 	private String userId;
 	private String firstName;
@@ -14,8 +17,11 @@ public class UserDto {
 	private String encryptedPassword;
 	private String emailVerificationToken;
 	private Boolean emailVerificationStatus =false;
-	private DepartmentDto departmentRequestModel;
+	private DepartmentDto department;
 	private List<AddressDto> addresses;
+	private Set<CourseDto> courses = new HashSet<>();
+
+	private Set<UserDto> users = new HashSet<>();
 
 	
 	public long getId() {
@@ -73,20 +79,32 @@ public class UserDto {
 		this.emailVerificationStatus = emailVerificationStatus;
 	}
 	
-	
-	
-	public DepartmentDto getDepartmentRequestModel() {
-		return departmentRequestModel;
-	}
-	public void setDepartmentRequestModel(DepartmentDto departmentRequestModel) {
-		this.departmentRequestModel = departmentRequestModel;
-	}
 	public List<AddressDto> getAddresses() {
 		return addresses;
 	}
 	public void setAddresses(List<AddressDto> addresses) {
 		this.addresses = addresses;
 	}
+	public DepartmentDto getDepartment() {
+		return department;
+	}
+	public void setDepartment(DepartmentDto department) {
+		this.department = department;
+	}
+	public Set<CourseDto> getCourses() {
+		return courses;
+	}
+	public void setCourses(Set<CourseDto> courses) {
+		this.courses = courses;
+	}
+	public Set<UserDto> getUsers() {
+		return users;
+	}
+	public void setUsers(Set<UserDto> users) {
+		this.users = users;
+	}
+	
+	
 	
 	
 }

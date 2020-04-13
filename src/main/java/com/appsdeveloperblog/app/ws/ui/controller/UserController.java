@@ -257,13 +257,14 @@ public class UserController {
 	public List<AddressResponseModel> getAddresses(){
 		
 		List<AddressResponseModel> returnAddressesList = new ArrayList<AddressResponseModel>();
+		
 		ModelMapper modelMapper = new ModelMapper();
 		List<AddressDto> list    = addressesService.getAddresses();
 		
 		for (AddressDto addressDto : list) {
-		   AddressResponseModel addressResponseModel = 	modelMapper.map(addressDto, AddressResponseModel.class);
+		    AddressResponseModel addressResponseModel = 	modelMapper.map(addressDto, AddressResponseModel.class);
 		   
-		   returnAddressesList.add(addressResponseModel);
+		    returnAddressesList.add(addressResponseModel);
 		}
 		
 		

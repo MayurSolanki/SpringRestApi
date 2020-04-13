@@ -22,11 +22,13 @@ import com.appsdeveloperblog.app.ws.io.repositories.DepartmentRepository;
 import com.appsdeveloperblog.app.ws.io.repositories.UserRepository;
 import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.dto.AddressDto;
+import com.appsdeveloperblog.app.ws.shared.dto.CourseDto;
 import com.appsdeveloperblog.app.ws.shared.dto.DepartmentDto;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
 import com.appsdeveloperblog.app.ws.shared.dto.Utils;
 import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
 
+import ch.qos.logback.core.joran.action.Action;
 import javassist.expr.NewArray;
 
 @Service
@@ -75,16 +77,23 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		
+		for (CourseDto courseDto : userDto.getCourses()) {
+			
+			courseDto.setCourseId(utils.generateAddressId(30));
+			
+			userDto.getCourses().add(courseDto);
+		}
+		
+		
+
+		
+
 		  
 			
-			DepartmentEntity departmentEntity =  departmentRepository.findByDepartmentName(userDto.getDepartmentRequestModel().getDepartmentName());
-		
-		 
+			DepartmentEntity departmentEntity =  departmentRepository.findByDepartmentName(userDto.getDepartment().getDepartmentName());
 			departmentEntity.setDepartmentId(utils.generateAddressId(30));
 			DepartmentDto departmentDto = modelMapper.map(departmentEntity, DepartmentDto.class);
-		 
-		 
-		    userDto.setDepartmentRequestModel(departmentDto);
+		    userDto.setDepartment(departmentDto);
 
 		
 		
