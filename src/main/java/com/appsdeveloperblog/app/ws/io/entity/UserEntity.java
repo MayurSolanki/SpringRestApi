@@ -20,6 +20,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+//@Data
+//@EqualsAndHashCode(exclude = "publishers")
+
 @Entity
 @Table(name = "users")
 public class UserEntity implements Serializable{
@@ -68,7 +74,7 @@ public class UserEntity implements Serializable{
 	DepartmentEntity department;
 	
 	
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "users_courses",
     joinColumns = {
             @JoinColumn(name = "users_id", referencedColumnName = "id",
@@ -76,12 +82,9 @@ public class UserEntity implements Serializable{
     inverseJoinColumns = {
             @JoinColumn(name = "course_id", referencedColumnName = "id",
                     nullable = false, updatable = false)})
-	private Set<CoursesEntity> courses = new HashSet<>();
-	
-	
+//    private Set<CoursesEntity> courses = new HashSet<>();
+	private List<CoursesEntity> courses;
 
-
-//    private List<AddressEntity> courses = new ArrayList<AddressEntity>();
 
 	
 	public long getId() {
@@ -174,23 +177,24 @@ public class UserEntity implements Serializable{
 		this.department = department;
 	}
 
-	public Set<CoursesEntity> getCourses() {
+//	public Set<CoursesEntity> getCourses() {
+//		return courses;
+//	}
+//
+//	public void setCourses(Set<CoursesEntity> courses) {
+//		this.courses = courses;
+//	}
+
+	public List<CoursesEntity> getCourses() {
 		return courses;
 	}
 
-	public void setCourses(Set<CoursesEntity> courses) {
+	public void setCourses(List<CoursesEntity> courses) {
 		this.courses = courses;
 	}
 
 
 
-//	public List<AddressEntity> getCourses() {
-//		return courses;
-//	}
-//
-//	public void setCourses(List<AddressEntity> courses) {
-//		this.courses = courses;
-//	}
 
 	
 	

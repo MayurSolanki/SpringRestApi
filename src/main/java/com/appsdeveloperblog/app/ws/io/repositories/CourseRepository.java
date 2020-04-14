@@ -7,5 +7,7 @@ import com.appsdeveloperblog.app.ws.io.entity.CoursesEntity;
 
 @Repository
 public interface CourseRepository extends  CrudRepository<CoursesEntity, Long>{
+	
+	CoursesEntity findByCourseName(String courseName);
 
 }

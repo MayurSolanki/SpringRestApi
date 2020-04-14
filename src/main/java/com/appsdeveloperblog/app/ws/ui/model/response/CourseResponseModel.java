@@ -8,7 +8,6 @@ public class CourseResponseModel {
 
 	private String courseName;
 	
-	private String userId;
 
 	public long getId() {
 		return id;
@@ -34,16 +33,6 @@ public class CourseResponseModel {
 		this.courseName = courseName;
 	}
 
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-	
-	
-	
 	
 	
 }

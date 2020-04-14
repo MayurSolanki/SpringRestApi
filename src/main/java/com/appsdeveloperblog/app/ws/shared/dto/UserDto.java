@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.appsdeveloperblog.app.ws.io.entity.CoursesEntity;
 
 public class UserDto {
 	
@@ -19,9 +18,9 @@ public class UserDto {
 	private Boolean emailVerificationStatus =false;
 	private DepartmentDto department;
 	private List<AddressDto> addresses;
-	private Set<CourseDto> courses = new HashSet<>();
-
-	private Set<UserDto> users = new HashSet<>();
+	
+	private List<CourseDto> courses;
+//     private Set<CourseDto> courses;
 
 	
 	public long getId() {
@@ -91,18 +90,19 @@ public class UserDto {
 	public void setDepartment(DepartmentDto department) {
 		this.department = department;
 	}
-	public Set<CourseDto> getCourses() {
+//	public Set<CourseDto> getCourses() {
+//		return courses;
+//	}
+//	public void setCourses(Set<CourseDto> courses) {
+//		this.courses = courses;
+//	}
+	public List<CourseDto> getCourses() {
 		return courses;
 	}
-	public void setCourses(Set<CourseDto> courses) {
+	public void setCourses(List<CourseDto> courses) {
 		this.courses = courses;
 	}
-	public Set<UserDto> getUsers() {
-		return users;
-	}
-	public void setUsers(Set<UserDto> users) {
-		this.users = users;
-	}
+	
 	
 	
 	

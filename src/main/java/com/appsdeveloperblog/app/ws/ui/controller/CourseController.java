@@ -32,7 +32,6 @@ public class CourseController {
 	
 	
 	@GetMapping(produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	
 	public List<CourseResponseModel> getCourses() {
 		
 		 List<CourseDto> coursesDtoList = new ArrayList<CourseDto>();
@@ -49,14 +48,14 @@ public class CourseController {
 			 
 		 }
 		
-		
-		
-
-		
 		return coursesResponseModelList;
 		
 	}
 	
 	
+	
+	
+	
+	// Get user by course, list of user who obtain that course,
 
 }

@@ -16,8 +16,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.appsdeveloperblog.app.ws.exception.CustomExceptionHandler;
+import com.appsdeveloperblog.app.ws.io.entity.CoursesEntity;
 import com.appsdeveloperblog.app.ws.io.entity.DepartmentEntity;
 import com.appsdeveloperblog.app.ws.io.entity.UserEntity;
+import com.appsdeveloperblog.app.ws.io.repositories.CourseRepository;
 import com.appsdeveloperblog.app.ws.io.repositories.DepartmentRepository;
 import com.appsdeveloperblog.app.ws.io.repositories.UserRepository;
 import com.appsdeveloperblog.app.ws.service.UserService;
@@ -33,88 +35,137 @@ import javassist.expr.NewArray;
 
 @Service
 public class UserServiceImpl implements UserService {
-	
 
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	CourseRepository courseRepository;
 
 	@Autowired
 	Utils utils;
 
 	@Autowired
 	BCryptPasswordEncoder cBcryptPasswordEncoder;
-	
+
 	@Autowired
 	DepartmentRepository departmentRepository;
-	
 
 	@Override
 	public UserDto createUser(UserDto userDto) {
-		
-	    ModelMapper modelMapper = new ModelMapper();
 
+		ModelMapper modelMapper = new ModelMapper();
 
 //         check in db, wheather email exist or not, see findBy (keyword)
 		if (userRepository.findByEmail(userDto.getEmail()) != null) {
 			throw new RuntimeException("Record already exist !!!");
 		}
-		
+
 //		if(userDto.getDepartmentDto() == null) {
 //			throw new CustomExceptionHandler(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage()); // this will trigger 3 rd method in AppExceptionHandler class, for different gson representation
 //
 //		}
-		
 
-		
-		for(int i = 0; i<userDto.getAddresses().size(); i++) {
-			
+		for (int i = 0; i < userDto.getAddresses().size(); i++) {
+
 			AddressDto addressDto = userDto.getAddresses().get(i);
-			
+
 			addressDto.setAddressId(utils.generateAddressId(30));
 			addressDto.setUserDetails(userDto);
-			
+
 			userDto.getAddresses().set(i, addressDto);
 		}
+
 		
+	
+
+		DepartmentEntity departmentEntity = departmentRepository.findByDepartmentName(userDto.getDepartment().getDepartmentName());
 		
-		for (CourseDto courseDto : userDto.getCourses()) {
+		if(departmentEntity == null) {
+			DepartmentEntity departmentEntityy  = new DepartmentEntity();
+			departmentEntityy.setDepartmentId(utils.generateAddressId(30));
+			departmentEntityy.setDepartmentName(userDto.getDepartment().getDepartmentName());
+			departmentEntityy.setDepartmentType(userDto.getDepartment().getDepartmentType());
+
 			
-			courseDto.setCourseId(utils.generateAddressId(30));
+			DepartmentEntity  departmentEntity2 =      departmentRepository.save(departmentEntityy);
 			
-			userDto.getCourses().add(courseDto);
+			DepartmentDto departmentDto = modelMapper.map(departmentEntity2, DepartmentDto.class);
+
+			userDto.setDepartment(departmentDto);
+			
+		}else {
+			departmentEntity.setDepartmentId(utils.generateAddressId(30));
+			DepartmentDto departmentDto = modelMapper.map(departmentEntity, DepartmentDto.class);
+			userDto.setDepartment(departmentDto);
 		}
 		
 		
-
 		
-
-		  
+		
+		for (int i = 0; i < userDto.getCourses().size(); i++) {
 			
-			DepartmentEntity departmentEntity =  departmentRepository.findByDepartmentName(userDto.getDepartment().getDepartmentName());
-			departmentEntity.setDepartmentId(utils.generateAddressId(30));
-			DepartmentDto departmentDto = modelMapper.map(departmentEntity, DepartmentDto.class);
-		    userDto.setDepartment(departmentDto);
+			CourseDto courseDtoFromLoop = userDto.getCourses().get(i);
+			
+			
+			
+			CoursesEntity coursesEntity = courseRepository.findByCourseName(courseDtoFromLoop.getCourseName());
+			
+			if(coursesEntity == null) {
+				
+				CoursesEntity coursesEntityy = new CoursesEntity();
+				
+				coursesEntityy.setCourseId(utils.generateAddressId(30));
+				coursesEntityy.setCourseName(courseDtoFromLoop.getCourseName());
 
+				
+				CoursesEntity  cEntity =      courseRepository.save(coursesEntityy);
+
+				
+				CourseDto courseDto2 = modelMapper.map(cEntity, CourseDto.class);
+
+				
+				 userDto.getCourses().set(i, courseDto2);
+				
+			}
+			else {
+				 
+				coursesEntity.setCourseId(utils.generateAddressId(30));
+				CourseDto courseDto2 = modelMapper.map(coursesEntity, CourseDto.class);
+				userDto.getCourses().set(i,courseDto2);
+ 
+
+			}
+		}
 		
 		
 		
+		  
+				
 		
+				
+				
+			
+		
+
 //		UserEntity userEnity = new UserEntity();
 //		BeanUtils.copyProperties(userDto, userEnity);
-		
+
 		UserEntity userEnity = modelMapper.map(userDto, UserEntity.class);
 
 		userEnity.setUserId(utils.generateUserId(30));
 		userEnity.setEncryptedPassword(cBcryptPasswordEncoder.encode(userDto.getPassword()));
-
+		
 
 		UserEntity savedUserEntityInDb = userRepository.save(userEnity);
-
 		
+
+	
+
 //		UserDto returnUserDto = new UserDto();
 //		BeanUtils.copyProperties(savedUserEntityInDb, returnUserDto); 
-		
-		UserDto returnUserDto = modelMapper.map(savedUserEntityInDb,UserDto.class);
+
+		UserDto returnUserDto = modelMapper.map(savedUserEntityInDb, UserDto.class);
 
 		return returnUserDto;
 	}
@@ -137,7 +188,11 @@ public class UserServiceImpl implements UserService {
 		UserEntity userEntity = userRepository.findByUserId(userId);
 
 		if (userEntity == null)
-			throw new CustomExceptionHandler(ErrorMessages.NO_RECORD_FOUND.getErrorMessage()); // this will trigger 3 rd method in AppExceptionHandler class, for different gson representation
+			throw new CustomExceptionHandler(ErrorMessages.NO_RECORD_FOUND.getErrorMessage()); // this will trigger 3 rd
+																								// method in
+																								// AppExceptionHandler
+																								// class, for different
+																								// gson representation
 
 		BeanUtils.copyProperties(userEntity, userDto);
 
@@ -165,13 +220,17 @@ public class UserServiceImpl implements UserService {
 
 		if (userEntityByUserId == null)
 //			throw new NullPointerException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
-			
-		throw new CustomExceptionHandler(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage()); // this will trigger 3 rd method in AppExceptionHandler class, for different gson representation
 
+			throw new CustomExceptionHandler(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage()); // this will
+																										// trigger 3 rd
+																										// method in
+																										// AppExceptionHandler
+																										// class, for
+																										// different
+																										// gson
+																										// representation
 
-			 
-
-		userEntityByUserId.setFirstName(userDto.getFirstName());   // update only two fields
+		userEntityByUserId.setFirstName(userDto.getFirstName()); // update only two fields
 		userEntityByUserId.setLastName(userDto.getLastName());
 
 		UserEntity updatedUserEntity = userRepository.save(userEntityByUserId);
@@ -184,32 +243,37 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void deleteUser(String userId) {
-		
+
 		UserEntity userEntityByUserId = userRepository.findByUserId(userId);
 
 		if (userEntityByUserId == null)
-			throw new CustomExceptionHandler(ErrorMessages.NO_RECORD_FOUND.getErrorMessage()); // this will trigger 3 rd method in AppExceptionHandler class, for different gson representation
+			throw new CustomExceptionHandler(ErrorMessages.NO_RECORD_FOUND.getErrorMessage()); // this will trigger 3 rd
+																								// method in
+																								// AppExceptionHandler
+																								// class, for different
+																								// gson representation
 
 		userRepository.delete(userEntityByUserId);
-		
+
 	}
 
 	@Override
 	public List<UserDto> getUsers(int page, int limit) {
 		List<UserDto> returnValue = new ArrayList<UserDto>();
-		
-		if(page > 0) page = page - 1;
-		
-		Pageable  pageableRequst = PageRequest.of(page, limit);
-	    Page< UserEntity> userPage =	userRepository.findAll(pageableRequst);
-	    
-	    List<UserEntity> users = userPage.getContent();
-	   
-	   for (UserEntity userEntity : users) {
-		   UserDto userDto = new UserDto();
-		   BeanUtils.copyProperties(userEntity, userDto);
-		   returnValue.add(userDto);
-	     }
+
+		if (page > 0)
+			page = page - 1;
+
+		Pageable pageableRequst = PageRequest.of(page, limit);
+		Page<UserEntity> userPage = userRepository.findAll(pageableRequst);
+
+		List<UserEntity> users = userPage.getContent();
+
+		for (UserEntity userEntity : users) {
+			UserDto userDto = new UserDto();
+			BeanUtils.copyProperties(userEntity, userDto);
+			returnValue.add(userDto);
+		}
 
 		return returnValue;
 	}
@@ -218,34 +282,32 @@ public class UserServiceImpl implements UserService {
 	public boolean requestPasswordReset(String email) {
 
 		boolean returnValue = false;
-		
+
 		UserEntity userEntity = userRepository.findByEmail(email);
-		
-		if(userEntity == null) {
-			return	returnValue;
+
+		if (userEntity == null) {
+			return returnValue;
 		}
-		
+
 		return returnValue;
 	}
 
 	@Override
 	public List<UserDto> findUsersByFirstName(String firstName) {
 
-		 List<UserDto> userDtos = new ArrayList<UserDto>();
-		 ModelMapper modelMapper = new ModelMapper();
-		 
-		 List<UserEntity> userEntities =   userRepository.findUserByFirstName(firstName);
-		 
-		 for (UserEntity userEntity : userEntities) {
-			 
-			 UserDto userDto = modelMapper.map(userEntity, UserDto.class);
-			 
-			 userDtos.add(userDto);
-							
-	       }
-		 
-		
-		
+		List<UserDto> userDtos = new ArrayList<UserDto>();
+		ModelMapper modelMapper = new ModelMapper();
+
+		List<UserEntity> userEntities = userRepository.findUserByFirstName(firstName);
+
+		for (UserEntity userEntity : userEntities) {
+
+			UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+
+			userDtos.add(userDto);
+
+		}
+
 		return userDtos;
 	}
 

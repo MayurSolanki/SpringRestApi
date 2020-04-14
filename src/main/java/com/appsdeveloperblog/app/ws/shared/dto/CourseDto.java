@@ -1,17 +1,25 @@
 package com.appsdeveloperblog.app.ws.shared.dto;
 
+import java.util.List;
+import java.util.Set;
+
+import com.appsdeveloperblog.app.ws.io.entity.CoursesEntity;
+import com.appsdeveloperblog.app.ws.io.entity.UserEntity;
+
 public class CourseDto {
 	
+	
+	private long id;
 	private String courseId;
-
 	private String courseName;
 	
-	private String userId;
+//	 private Set<UserDto> users;
+	 private List<UserEntity> users;
+	
 
 	
 	
 
-	private long id;
 
 	public long getId() {
 		return id;
@@ -37,13 +45,23 @@ public class CourseDto {
 		this.courseName = courseName;
 	}
 
-	public String getUserId() {
-		return userId;
+	public List<UserEntity> getUsers() {
+		return users;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUsers(List<UserEntity> users) {
+		this.users = users;
 	}
+
+//	public Set<UserDto> getUsers() {
+//		return users;
+//	}
+//
+//	public void setUsers(Set<UserDto> users) {
+//		this.users = users;
+//	}
+
+	
 
 
 	

@@ -6,11 +6,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
@@ -21,6 +25,7 @@ public class CoursesEntity implements Serializable {
 	/**
 	 * 
 	 */
+	
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -30,12 +35,13 @@ public class CoursesEntity implements Serializable {
 	@Column(nullable = false)
 	private String courseId;
 
-	@Column
+	@Column(unique =true, nullable =false)
 	private String courseName;
 
-	@ManyToMany(mappedBy = "courses", fetch = FetchType.LAZY)
-	private Set<UserEntity> users = new HashSet<>();
-//    private List<CoursesEntity> courses = new ArrayList<CoursesEntity>();
+	@ManyToMany(mappedBy = "courses",fetch = FetchType.EAGER)
+//    private Set<UserEntity> users = new HashSet<>();
+     private List<UserEntity> users;
+
 
 
 	public long getId() {
@@ -63,21 +69,34 @@ public class CoursesEntity implements Serializable {
 		this.courseName = courseName;
 	}
 
-	public Set<UserEntity> getUsers() {
+//	public Set<UserEntity> getUsers() {
+//		return users;
+//	}
+//
+//	public void setUsers(Set<UserEntity> users) {
+//		this.users = users;
+//	}
+
+	
+//	public Set<UserEntity> getUsers() {
+//		return users;
+//	}
+//
+//	public void addUsers(UserEntity userEntity) {
+//		users.add(userEntity);
+//		userEntity.getCourses().add(this);	
+//		}
+	
+
+	public List<UserEntity> getCourses() {
 		return users;
 	}
 
-	public void setUsers(Set<UserEntity> users) {
-		this.users = users;
+	public void setCourses(List<UserEntity> courses) {
+		this.users = courses;
 	}
-
-//	public List<CoursesEntity> getCourses() {
-//		return courses;
-//	}
-//
-//	public void setCourses(List<CoursesEntity> courses) {
-//		this.courses = courses;
-//	}
+	
+	
 
 	
 	

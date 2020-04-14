@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.EnableLoadTimeWeaving;
 import org.springframework.stereotype.Service;
 
+import com.appsdeveloperblog.app.ws.exception.CustomExceptionHandler;
 import com.appsdeveloperblog.app.ws.io.entity.AddressEntity;
 import com.appsdeveloperblog.app.ws.io.entity.UserEntity;
 import com.appsdeveloperblog.app.ws.io.repositories.AddressRepository;
 import com.appsdeveloperblog.app.ws.io.repositories.UserRepository;
 import com.appsdeveloperblog.app.ws.service.AddressesService;
 import com.appsdeveloperblog.app.ws.shared.dto.AddressDto;
+import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
 
 @Service
 public class AddressesServiceImpl implements AddressesService {
@@ -51,6 +53,8 @@ public class AddressesServiceImpl implements AddressesService {
 
 		 
 		listAddressesEntity =   (List<AddressEntity>) addressRepository.findAll();
+		
+		if(listAddressesEntity.isEmpty()) throw new CustomExceptionHandler(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
 
 
 		for (AddressEntity addressEntity : listAddressesEntity) {
