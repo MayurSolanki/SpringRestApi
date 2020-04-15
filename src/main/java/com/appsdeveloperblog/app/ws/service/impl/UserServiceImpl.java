@@ -156,7 +156,6 @@ public class UserServiceImpl implements UserService {
 		userEnity.setUserId(utils.generateUserId(30));
 		userEnity.setEncryptedPassword(cBcryptPasswordEncoder.encode(userDto.getPassword()));
 		
-
 		UserEntity savedUserEntityInDb = userRepository.save(userEnity);
 		
 
@@ -310,5 +309,8 @@ public class UserServiceImpl implements UserService {
 
 		return userDtos;
 	}
+	
+	// Password reset/update/change  -- password
+	//https://stackoverflow.com/questions/11525308/changing-password-spring-security
 
 }

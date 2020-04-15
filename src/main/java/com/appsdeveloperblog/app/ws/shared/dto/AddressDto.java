@@ -14,18 +14,22 @@ public class AddressDto {
     
     
     
-	public String getAddressId() {
-		return addressId;
-	}
-	public void setAddressId(String addressId) {
-		this.addressId = addressId;
-	}
+	
 	public long getId() {
 		return id;
 	}
 	public void setId(long id) {
 		this.id = id;
 	}
+	
+    
+	public String getAddressId() {
+		return addressId;
+	}
+	public void setAddressId(String addressId) {
+		this.addressId = addressId;
+	}
+	
 	public String getCity() {
 		return city;
 	}
@@ -71,7 +75,5 @@ public class AddressDto {
 		this.userDetails = userDetails;
 	}
 	
-    
-    
-	
+
 }

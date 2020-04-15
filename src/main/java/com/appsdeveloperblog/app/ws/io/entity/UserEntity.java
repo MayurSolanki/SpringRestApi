@@ -20,6 +20,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.FetchMode;
+import org.hibernate.annotations.Fetch;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -59,11 +62,12 @@ public class UserEntity implements Serializable{
 	
 	
 	
-	@OneToMany(mappedBy="userDetails", cascade=CascadeType.ALL, fetch = FetchType.LAZY)  // mapped by -> check name in UserEntity class, i.e "userEntity"
+	@OneToMany(mappedBy="userDetails", cascade=CascadeType.ALL,fetch = FetchType.EAGER)  // mapped by -> check name in UserEntity class, i.e "userEntity"
+	@Fetch(value = org.hibernate.annotations.FetchMode.SUBSELECT)
 	private List<AddressEntity> addresses;  // Table to which relation, child table relation
 	
 	
-	@OneToOne(fetch = FetchType.LAZY,
+	@OneToOne(fetch = FetchType.EAGER,
             cascade =  CascadeType.ALL,
             mappedBy = "userDetails")
     private UserProfileImageEntity userProfileImageEntity;
@@ -74,7 +78,8 @@ public class UserEntity implements Serializable{
 	DepartmentEntity department;
 	
 	
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
+	@Fetch(value = org.hibernate.annotations.FetchMode.SUBSELECT)
 	@JoinTable(name = "users_courses",
     joinColumns = {
             @JoinColumn(name = "users_id", referencedColumnName = "id",

@@ -19,8 +19,8 @@ public class UserDetailsRequestModel {
 
 	private List<AddressRequestModel> addresses;
 	
-//	private List<CourseRequestModel> courses;
-	private Set<CoursesEntity> courses = new HashSet<>();
+	private List<CourseRequestModel> courses;
+//	private Set<CoursesEntity> courses = new HashSet<>();
 
 
 	public String getFirstName() {
@@ -71,21 +71,21 @@ public class UserDetailsRequestModel {
 		this.addresses = addresses;
 	}
 
-	public Set<CoursesEntity> getCourses() {
-		return courses;
-	}
-
-	public void setCourses(Set<CoursesEntity> courses) {
-		this.courses = courses;
-	}
-
-//	public List<CourseRequestModel> getCourses() {
+//	public Set<CoursesEntity> getCourses() {
 //		return courses;
 //	}
 //
-//	public void setCourses(List<CourseRequestModel> courses) {
+//	public void setCourses(Set<CoursesEntity> courses) {
 //		this.courses = courses;
 //	}
+
+	public List<CourseRequestModel> getCourses() {
+		return courses;
+	}
+
+	public void setCourses(List<CourseRequestModel> courses) {
+		this.courses = courses;
+	}
 
 	
 	

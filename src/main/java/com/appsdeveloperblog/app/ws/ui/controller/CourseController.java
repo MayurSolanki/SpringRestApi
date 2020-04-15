@@ -29,8 +29,6 @@ public class CourseController {
 	CourseService courseService;
 	
 	
-	
-	
 	@GetMapping(produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public List<CourseResponseModel> getCourses() {
 		
@@ -44,8 +42,7 @@ public class CourseController {
 		 for (CourseDto courseDto : coursesDtoList) {
 			 
 			 CourseResponseModel  courseResponseModel = modelMapper.map(courseDto, CourseResponseModel.class);
-			 coursesResponseModelList.add(courseResponseModel);
-			 
+			 coursesResponseModelList.add(courseResponseModel);	 
 		 }
 		
 		return coursesResponseModelList;
@@ -56,6 +53,13 @@ public class CourseController {
 	
 	
 	
-	// Get user by course, list of user who obtain that course,
+	// Get user by course, list of user who opt that course,
+	
+	
+	
+	
+	
+	
+	// Add courses to the users, suppose user Wants to Opt for particular course later
 
 }

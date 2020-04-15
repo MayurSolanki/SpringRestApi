@@ -19,6 +19,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +51,9 @@ import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
 import com.appsdeveloperblog.app.ws.ui.model.response.OperationStatusModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.ResponseOperationEnum;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserProfileImageResponse;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsResponseModel;
 
 
@@ -122,15 +126,22 @@ public class UserController {
 
 //	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	@GetMapping(path = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	public UserDetailsResponseModel getUser(@PathVariable String id) {
+	public MappingJacksonValue getUser(@PathVariable String id) {
 
 		UserDetailsResponseModel userDetailsResponseModel = new UserDetailsResponseModel();
 
 		UserDto userDto = userService.getUserByUserId(id);
 
 		BeanUtils.copyProperties(userDto, userDetailsResponseModel);
+		
+	    SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("firstName","lastName","email");
+	    FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter", filter);
 
-		return userDetailsResponseModel;
+	    MappingJacksonValue mapping = new MappingJacksonValue(userDetailsResponseModel);
+	    mapping.setFilters(filters);
+
+
+		return mapping;
 
 	}
 
@@ -220,8 +231,7 @@ public class UserController {
 	}
 
 	// https://localhost/mobile-app-ws/users/{userId}/addresses
-	@GetMapping(path = "/{userId}/addresses", produces = { MediaType.APPLICATION_XML_VALUE,
-			MediaType.APPLICATION_JSON_VALUE })
+	@GetMapping(path = "/{userId}/addresses", produces = { MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE })
 	public List<AddressResponseModel> getUserAddresses(@PathVariable String userId) {
 
 		List<AddressResponseModel> returnList = new ArrayList<AddressResponseModel>();
@@ -229,9 +239,15 @@ public class UserController {
 		List<AddressDto> addressesDto = addressesService.getUserAddresses(userId);
 
 		if (addressesDto != null && !addressesDto.isEmpty()) {
-			java.lang.reflect.Type listType = new TypeToken<List<AddressResponseModel>>() {
-			}.getType();
-			returnList = new ModelMapper().map(addressesDto, listType);
+			
+			for (AddressDto addressDto : addressesDto) {
+				ModelMapper modelMapper = new ModelMapper();
+			   AddressResponseModel addressResponseModel =	modelMapper.map(addressDto, AddressResponseModel.class);
+			   
+			    returnList.add(addressResponseModel);
+			}
+//			java.lang.reflect.Type listType = new TypeToken<List<AddressResponseModel>>() {}.getType();
+//			returnList = new ModelMapper().map(addressesDto, listType);
 		}
 
 		return returnList;
