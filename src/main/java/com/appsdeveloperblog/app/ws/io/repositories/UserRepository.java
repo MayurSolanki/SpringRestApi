@@ -30,8 +30,8 @@ public interface UserRepository extends PagingAndSortingRepository<UserEntity,Lo
 //	List<UserEntity> findUserByFirstName(String firstName);      // Positional paramater
 	
 	
-	@Query(value = "SELECT * FROM `users` WHERE users.first_name = :firstName", nativeQuery = true)
-	List<UserEntity> findUserByFirstName(@Param("firstName") String firstName);      // Positional paramater
+	@Query(value = "SELECT * FROM users WHERE users.first_name = :firstName", nativeQuery = true)
+	List<UserEntity> findUserByFirstNameSqlNtv(@Param("firstName") String firstName);      // Positional paramater
 	
 	@Query(value= "select u.first_name, u.last_name from users u where first_name LIKE '%keyword%' or last_name LIKE '%keyword%'",nativeQuery= true)
 	List<UserEntity> findUserByKeyword(@Param("keyword") String keyword);  // Search Query

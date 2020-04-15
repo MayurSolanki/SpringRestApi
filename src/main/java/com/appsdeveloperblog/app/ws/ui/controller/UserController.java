@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
 
 import org.aspectj.weaver.tools.Trace;
@@ -51,6 +52,7 @@ import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
 import com.appsdeveloperblog.app.ws.ui.model.response.OperationStatusModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.ResponseOperationEnum;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserProfileImageResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
@@ -210,30 +212,38 @@ public class UserController {
 //	@CrossOrigin(origins = "http://localhost:8083")  // allow from specific origin with port
 //	@CrossOrigin(origins = {"http://localhost:8083","http://myblog.com:8084"})  // allow from list of origin
 
-	public List<UserDetailsResponseModel> getUsers(@RequestParam(value = "page", defaultValue = "1") int page,
+	public MappingJacksonValue getUsers(@RequestParam(value = "page", defaultValue = "1") int page,
 			@RequestParam(value = "limit", defaultValue = "25") int limit) {
 
 		List<UserDetailsResponseModel> returnList = new ArrayList<UserDetailsResponseModel>();
-
 		List<UserDto> usersList = userService.getUsers(page, limit);
+		MappingJacksonValue mappingJacksonValue = null;
 
 		for (UserDto userDto : usersList) {
 			UserDetailsResponseModel userDetailsResponseModel = new UserDetailsResponseModel();
 
 			BeanUtils.copyProperties(userDto, userDetailsResponseModel);
 
-			returnList.add(userDetailsResponseModel);
+			 FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter",
+			            SimpleBeanPropertyFilter.filterOutAllExcept("userId","firstName","lastName","email"));
+			    
+				 mappingJacksonValue = new MappingJacksonValue(returnList);
+	 
+			   returnList.add(userDetailsResponseModel);	
+			   
+			   mappingJacksonValue.setFilters(filters);
+			   
 
 		}
 
-		return returnList;
+		return mappingJacksonValue;
 
 	}
 
 	// https://localhost/mobile-app-ws/users/{userId}/addresses
 	@GetMapping(path = "/{userId}/addresses", produces = { MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE })
-	public List<AddressResponseModel> getUserAddresses(@PathVariable String userId) {
-
+	public List<AddressResponseModel> getUserAddresses(@PathVariable String userId,HttpServletResponse response) {
+		
 		List<AddressResponseModel> returnList = new ArrayList<AddressResponseModel>();
 
 		List<AddressDto> addressesDto = addressesService.getUserAddresses(userId);
@@ -249,6 +259,9 @@ public class UserController {
 //			java.lang.reflect.Type listType = new TypeToken<List<AddressResponseModel>>() {}.getType();
 //			returnList = new ModelMapper().map(addressesDto, listType);
 		}
+		
+			response.setHeader("My custom header", "ABCDXYZ");
+
 
 		return returnList;
 
@@ -279,6 +292,8 @@ public class UserController {
 		
 		for (AddressDto addressDto : list) {
 		    AddressResponseModel addressResponseModel = 	modelMapper.map(addressDto, AddressResponseModel.class);
+		    
+		    
 		   
 		    returnAddressesList.add(addressResponseModel);
 		}
@@ -291,21 +306,29 @@ public class UserController {
 	
 //	@RequestMapping(value = "/users-by-first-name}", method = RequestMethod.GET)
 	@GetMapping(path = "users-by-first-name",produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-	public List<UserDetailsResponseModel> getUsersByFirstName(@RequestParam String firstName){
+	public MappingJacksonValue getUsersByFirstName(@RequestParam String firstName){
 		
 		List<UserDetailsResponseModel> returnList = new ArrayList<UserDetailsResponseModel>();
-		
+		ObjectMapper mapper = new ObjectMapper();
 		List<UserDto> userList =    userService.findUsersByFirstName(firstName);
-		
 		ModelMapper modelMapper = new ModelMapper();
+		MappingJacksonValue mappingJacksonValue = null;
 		
 		for (UserDto userDto : userList) {
 		   UserDetailsResponseModel userDetailsResponseModel =	modelMapper.map(userDto, UserDetailsResponseModel.class);
+		   
+		   FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter",
+		            SimpleBeanPropertyFilter.filterOutAllExcept("firstName","lastName","email"));
+		    
+			 mappingJacksonValue = new MappingJacksonValue(returnList);
+ 
 		   returnList.add(userDetailsResponseModel);	
+		   
+		   mappingJacksonValue.setFilters(filters);
 		} 
 		
 		
-		return returnList;
+		return mappingJacksonValue;
 		
 	}
 	

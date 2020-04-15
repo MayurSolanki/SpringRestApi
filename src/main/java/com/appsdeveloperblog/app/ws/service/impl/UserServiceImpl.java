@@ -15,7 +15,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.appsdeveloperblog.app.ws.exception.AppExceptionHandler;
 import com.appsdeveloperblog.app.ws.exception.CustomExceptionHandler;
+import com.appsdeveloperblog.app.ws.exception.UserServiceException;
 import com.appsdeveloperblog.app.ws.io.entity.CoursesEntity;
 import com.appsdeveloperblog.app.ws.io.entity.DepartmentEntity;
 import com.appsdeveloperblog.app.ws.io.entity.UserEntity;
@@ -297,7 +299,9 @@ public class UserServiceImpl implements UserService {
 		List<UserDto> userDtos = new ArrayList<UserDto>();
 		ModelMapper modelMapper = new ModelMapper();
 
-		List<UserEntity> userEntities = userRepository.findUserByFirstName(firstName);
+		List<UserEntity> userEntities = userRepository.findUserByFirstNameSqlNtv(firstName);
+		
+		if(userEntities.isEmpty()) throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage()); 
 
 		for (UserEntity userEntity : userEntities) {
 
