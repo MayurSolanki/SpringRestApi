@@ -42,8 +42,10 @@ import com.appsdeveloperblog.app.ws.service.AddressesService;
 import com.appsdeveloperblog.app.ws.service.FileStorageService;
 import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.dto.AddressDto;
+import com.appsdeveloperblog.app.ws.shared.dto.DepartmentDto;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
 import com.appsdeveloperblog.app.ws.shared.dto.UserProfileImageDto;
+import com.appsdeveloperblog.app.ws.ui.model.request.DepartmentRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.request.PasswordResetRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.request.RequestOperationEnum;
 import com.appsdeveloperblog.app.ws.ui.model.request.UserDetailsRequestModel;
@@ -149,7 +151,7 @@ public class UserController {
 
 	@PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	public UserDetailsResponseModel createUser(@RequestBody UserDetailsRequestModel userDetailsRequestModel)
+	public MappingJacksonValue createUser(@RequestBody UserDetailsRequestModel userDetailsRequestModel)
 			throws Exception {
 
 		UserDetailsResponseModel userDetailResponseModel = new UserDetailsResponseModel();
@@ -170,8 +172,15 @@ public class UserController {
 
 //		BeanUtils.copyProperties(createdUserDto, userDetailResponseModel);
 		userDetailResponseModel = modelMapper.map(createdUserDto, UserDetailsResponseModel.class);
+		
+		// Jackson mapping
+		  SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("userId,firstName","lastName","email","department","addresses");
+		    FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter", filter);
 
-		return userDetailResponseModel;
+		    MappingJacksonValue mapping = new MappingJacksonValue(userDetailResponseModel);
+		    mapping.setFilters(filters);
+
+		return mapping;
 	}
 	
 
@@ -305,7 +314,7 @@ public class UserController {
 	}
 	
 //	@RequestMapping(value = "/users-by-first-name}", method = RequestMethod.GET)
-	@GetMapping(path = "users-by-first-name",produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+	@GetMapping(path = "/users-by-first-name",produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
 	public MappingJacksonValue getUsersByFirstName(@RequestParam String firstName){
 		
 		List<UserDetailsResponseModel> returnList = new ArrayList<UserDetailsResponseModel>();
@@ -315,16 +324,18 @@ public class UserController {
 		MappingJacksonValue mappingJacksonValue = null;
 		
 		for (UserDto userDto : userList) {
-		   UserDetailsResponseModel userDetailsResponseModel =	modelMapper.map(userDto, UserDetailsResponseModel.class);
+		   
+			UserDetailsResponseModel userDetailsResponseModel =	modelMapper.map(userDto, UserDetailsResponseModel.class);
 		   
 		   FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter",
-		            SimpleBeanPropertyFilter.filterOutAllExcept("firstName","lastName","email"));
+		   SimpleBeanPropertyFilter.filterOutAllExcept("firstName","lastName","email"));
 		    
-			 mappingJacksonValue = new MappingJacksonValue(returnList);
+			
+		   mappingJacksonValue = new MappingJacksonValue(returnList);
  
-		   returnList.add(userDetailsResponseModel);	
+		    returnList.add(userDetailsResponseModel);	
 		   
-		   mappingJacksonValue.setFilters(filters);
+			mappingJacksonValue.setFilters(filters);
 		} 
 		
 		
@@ -333,6 +344,32 @@ public class UserController {
 	}
 	
 	
+	@RequestMapping(value = "/{userId}/department",produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE} , method = RequestMethod.PUT)
+//	@PutMapping(path = "",)
+	public MappingJacksonValue updateUserDepartment(@PathVariable String userId, @RequestBody DepartmentRequestModel departmentRequestModel) {
+		
+		DepartmentDto departmentDto = new DepartmentDto();
+		
+		BeanUtils.copyProperties(departmentRequestModel, departmentDto);
+		
+		
+		UserDto userDto =   userService.addUserDepartment(userId, departmentDto);
+		
+				
+		 ModelMapper modelMapper = new ModelMapper();
+	 	UserDetailsResponseModel userDetailsResponseModel =  modelMapper.map(userDto, UserDetailsResponseModel.class);
+	 	
+	 	 
+	 	    SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("userId","department");
+		    FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter", filter);
+
+		    MappingJacksonValue mapping = new MappingJacksonValue(userDetailsResponseModel);
+		    mapping.setFilters(filters);
+
+		
+		
+		 return mapping;
+	}
 	
 	
 	
@@ -355,5 +392,7 @@ public class UserController {
 		return returnOperationStatusModel;
 		
 	}
+	
+	
 
 }

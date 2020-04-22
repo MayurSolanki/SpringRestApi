@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.appsdeveloperblog.app.ws.io.entity.CoursesEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserDetailsRequestModel {
@@ -15,6 +16,7 @@ public class UserDetailsRequestModel {
 	private String password;
 
 //	@JsonProperty("departmentInformation")    // Set this if you want to accept json object with custom name otherwise name will be according to dto poperty
+	@JsonIgnore
 	private DepartmentRequestModel department;
 
 	private List<AddressRequestModel> addresses;

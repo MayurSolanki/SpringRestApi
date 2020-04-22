@@ -78,77 +78,58 @@ public class UserServiceImpl implements UserService {
 			userDto.getAddresses().set(i, addressDto);
 		}
 
-		
-	
+		if (userDto.getDepartment() != null) {
 
-		DepartmentEntity departmentEntity = departmentRepository.findByDepartmentName(userDto.getDepartment().getDepartmentName());
-		
-		if(departmentEntity == null) {
-			DepartmentEntity departmentEntityy  = new DepartmentEntity();
-			departmentEntityy.setDepartmentId(utils.generateAddressId(30));
-			departmentEntityy.setDepartmentName(userDto.getDepartment().getDepartmentName());
-			departmentEntityy.setDepartmentType(userDto.getDepartment().getDepartmentType());
+			DepartmentEntity departmentEntity = departmentRepository
+					.findByDepartmentName(userDto.getDepartment().getDepartmentName());
 
-			
-			DepartmentEntity  departmentEntity2 =      departmentRepository.save(departmentEntityy);
-			
-			DepartmentDto departmentDto = modelMapper.map(departmentEntity2, DepartmentDto.class);
+			if (departmentEntity == null) {
+				DepartmentEntity departmentEntityy = new DepartmentEntity();
+				departmentEntityy.setDepartmentId(utils.generateAddressId(30));
+				departmentEntityy.setDepartmentName(userDto.getDepartment().getDepartmentName());
+				departmentEntityy.setDepartmentType(userDto.getDepartment().getDepartmentType());
 
-			userDto.setDepartment(departmentDto);
-			
-		}else {
-			departmentEntity.setDepartmentId(utils.generateAddressId(30));
-			DepartmentDto departmentDto = modelMapper.map(departmentEntity, DepartmentDto.class);
-			userDto.setDepartment(departmentDto);
+				DepartmentEntity departmentEntity2 = departmentRepository.save(departmentEntityy);
+
+				DepartmentDto departmentDto = modelMapper.map(departmentEntity2, DepartmentDto.class);
+
+				userDto.setDepartment(departmentDto);
+
+			} else {
+				departmentEntity.setDepartmentId(utils.generateAddressId(30));
+				DepartmentDto departmentDto = modelMapper.map(departmentEntity, DepartmentDto.class);
+				userDto.setDepartment(departmentDto);
+			}
+
 		}
-		
-		
-		
-		
+
 		for (int i = 0; i < userDto.getCourses().size(); i++) {
-			
+
 			CourseDto courseDtoFromLoop = userDto.getCourses().get(i);
-			
-			
-			
+
 			CoursesEntity coursesEntity = courseRepository.findByCourseName(courseDtoFromLoop.getCourseName());
-			
-			if(coursesEntity == null) {
-				
+
+			if (coursesEntity == null) {
+
 				CoursesEntity coursesEntityy = new CoursesEntity();
-				
+
 				coursesEntityy.setCourseId(utils.generateAddressId(30));
 				coursesEntityy.setCourseName(courseDtoFromLoop.getCourseName());
 
-				
-				CoursesEntity  cEntity =      courseRepository.save(coursesEntityy);
+				CoursesEntity cEntity = courseRepository.save(coursesEntityy);
 
-				
 				CourseDto courseDto2 = modelMapper.map(cEntity, CourseDto.class);
 
-				
-				 userDto.getCourses().set(i, courseDto2);
-				
-			}
-			else {
-				 
+				userDto.getCourses().set(i, courseDto2);
+
+			} else {
+
 				coursesEntity.setCourseId(utils.generateAddressId(30));
 				CourseDto courseDto2 = modelMapper.map(coursesEntity, CourseDto.class);
-				userDto.getCourses().set(i,courseDto2);
- 
+				userDto.getCourses().set(i, courseDto2);
 
 			}
 		}
-		
-		
-		
-		  
-				
-		
-				
-				
-			
-		
 
 //		UserEntity userEnity = new UserEntity();
 //		BeanUtils.copyProperties(userDto, userEnity);
@@ -157,11 +138,8 @@ public class UserServiceImpl implements UserService {
 
 		userEnity.setUserId(utils.generateUserId(30));
 		userEnity.setEncryptedPassword(cBcryptPasswordEncoder.encode(userDto.getPassword()));
-		
-		UserEntity savedUserEntityInDb = userRepository.save(userEnity);
-		
 
-	
+		UserEntity savedUserEntityInDb = userRepository.save(userEnity);
 
 //		UserDto returnUserDto = new UserDto();
 //		BeanUtils.copyProperties(savedUserEntityInDb, returnUserDto); 
@@ -300,8 +278,9 @@ public class UserServiceImpl implements UserService {
 		ModelMapper modelMapper = new ModelMapper();
 
 		List<UserEntity> userEntities = userRepository.findUserByFirstNameSqlNtv(firstName);
-		
-		if(userEntities.isEmpty()) throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage()); 
+
+		if (userEntities.isEmpty())
+			throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
 
 		for (UserEntity userEntity : userEntities) {
 
@@ -313,8 +292,33 @@ public class UserServiceImpl implements UserService {
 
 		return userDtos;
 	}
-	
-	// Password reset/update/change  -- password
-	//https://stackoverflow.com/questions/11525308/changing-password-spring-security
+
+	@Override
+	public UserDto addUserDepartment(String userId, DepartmentDto departmentDto) {
+
+		UserDto userDtoReturn = new UserDto();
+
+		UserEntity userEntity = userRepository.findByUserId(userId);
+		
+		DepartmentEntity departmentEntity = departmentRepository.findByDepartmentName(departmentDto.getDepartmentName());
+
+		if (userEntity != null && departmentEntity != null) {
+
+
+			userEntity.setDepartment(departmentEntity);
+
+			UserEntity userEntityFromDb = userRepository.save(userEntity);
+			
+			ModelMapper modelMapper = new ModelMapper();
+			userDtoReturn =  modelMapper.map(userEntityFromDb, UserDto.class);
+
+
+		}
+
+		return userDtoReturn;
+	}
+
+	// Password reset/update/change -- password
+	// https://stackoverflow.com/questions/11525308/changing-password-spring-security
 
 }

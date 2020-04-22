@@ -22,6 +22,7 @@ import javax.persistence.Table;
 
 import org.hibernate.FetchMode;
 import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.IndexColumn;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -78,7 +79,7 @@ public class UserEntity implements Serializable{
 	DepartmentEntity department;
 	
 	
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@Fetch(value = org.hibernate.annotations.FetchMode.SUBSELECT)
 	@JoinTable(name = "users_courses",
     joinColumns = {
@@ -89,6 +90,21 @@ public class UserEntity implements Serializable{
                     nullable = false, updatable = false)})
 //    private Set<CoursesEntity> courses = new HashSet<>();
 	private List<CoursesEntity> courses;
+	
+	
+	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@Fetch(value = org.hibernate.annotations.FetchMode.SUBSELECT)
+	@JoinTable(name = "users_fav_courses", 
+    joinColumns = {
+            @JoinColumn(name = "users_id", referencedColumnName = "id",
+                   nullable = false, updatable = false)},
+    inverseJoinColumns = {
+            @JoinColumn(name = "course_id", referencedColumnName = "id",
+                    nullable = false, updatable = false)})
+//    private Set<CoursesEntity> courses = new HashSet<>();
+	private List<CoursesEntity> favCourses;
+	
 
 
 	
@@ -196,6 +212,14 @@ public class UserEntity implements Serializable{
 
 	public void setCourses(List<CoursesEntity> courses) {
 		this.courses = courses;
+	}
+
+	public List<CoursesEntity> getFavCourses() {
+		return favCourses;
+	}
+
+	public void setFavCourses(List<CoursesEntity> favCourses) {
+		this.favCourses = favCourses;
 	}
 
 

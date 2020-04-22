@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import com.appsdeveloperblog.app.ws.shared.dto.DepartmentDto;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
 
 
@@ -24,6 +25,8 @@ public interface UserService extends UserDetailsService{
 	boolean requestPasswordReset(String email);
 
 	List<UserDto> findUsersByFirstName(String firstName);
+	
+	UserDto addUserDepartment(String userId,DepartmentDto departmentDto);
 	
 	
 	

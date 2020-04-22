@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.appsdeveloperblog.app.ws.io.entity.DepartmentEntity;
+import com.appsdeveloperblog.app.ws.io.entity.UserEntity;
 import com.appsdeveloperblog.app.ws.io.repositories.DepartmentRepository;
 import com.appsdeveloperblog.app.ws.io.repositories.UserRepository;
 import com.appsdeveloperblog.app.ws.service.DepartmentService;
@@ -55,6 +56,9 @@ public class DepartmentServiceImpl implements DepartmentService{
 		
 		return departmentDto2;
 	}
+
+
+	
 	
 
 }

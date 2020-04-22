@@ -38,11 +38,14 @@ public class CoursesEntity implements Serializable {
 	@Column(unique =true, nullable =false)
 	private String courseName;
 
-	@ManyToMany(mappedBy = "courses",fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "courses",fetch = FetchType.LAZY)
 //    private Set<UserEntity> users = new HashSet<>();
      private List<UserEntity> users;
 
 
+	@ManyToMany(mappedBy = "favCourses",fetch = FetchType.LAZY)
+    private List<UserEntity> usersFavCourses;
+	
 
 	public long getId() {
 		return id;
@@ -88,13 +91,36 @@ public class CoursesEntity implements Serializable {
 //		}
 	
 
-	public List<UserEntity> getCourses() {
+//	public List<UserEntity> getCourses() {
+//		return users;
+//	}
+//
+//	public void setCourses(List<UserEntity> courses) {
+//		this.users = courses;
+//	}
+//	
+
+	public List<UserEntity> getUsersFavCourses() {
+		return usersFavCourses;
+	}
+
+	public void setUsersFavCourses(List<UserEntity> usersFavCourses) {
+		this.usersFavCourses = usersFavCourses;
+	}
+
+	
+	public List<UserEntity> getUsers() {
 		return users;
 	}
 
-	public void setCourses(List<UserEntity> courses) {
-		this.users = courses;
+	public void setUsers(List<UserEntity> users) {
+		this.users = users;
 	}
+	
+	
+	
+	
+
 	
 	
 
