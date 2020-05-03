@@ -38,7 +38,7 @@ public class CoursesEntity implements Serializable {
 	@Column(unique =true, nullable =false)
 	private String courseName;
 
-	@ManyToMany(mappedBy = "courses",fetch = FetchType.LAZY)
+	 @ManyToMany(mappedBy = "courses",fetch = FetchType.LAZY)
 //    private Set<UserEntity> users = new HashSet<>();
      private List<UserEntity> users;
 
@@ -117,17 +117,4 @@ public class CoursesEntity implements Serializable {
 		this.users = users;
 	}
 	
-	
-	
-	
-
-	
-	
-
-	
-	
-	
-
-
-
 }

@@ -79,13 +79,14 @@ public class CourseServiceImpl implements CourseService{
 	     CoursesEntity coursesEntity =  	courseRepository.findByCourseName(courseDto.getCourseName());
 	     
 	     if(coursesEntity == null) {
-	    	 CoursesEntity coursesEntityNew = new CoursesEntity();
-	    	 
-	    	 coursesEntityNew.setCourseId(utils.generateAddressId(30));
-	    	 coursesEntityNew.setCourseName(courseDto.getCourseName());
-	    	 
-		     CoursesEntity coursesEntity1 =  	courseRepository.save(coursesEntityNew);
-		     coursesEntityList.add(coursesEntity1);
+	    	 throw new CustomExceptionHandler(courseDto.getCourseName() +" Not found , Create First"); 
+//	    	 CoursesEntity coursesEntityNew = new CoursesEntity();
+//	    	 
+//	    	 coursesEntityNew.setCourseId(utils.generateAddressId(30));
+//	    	 coursesEntityNew.setCourseName(courseDto.getCourseName());
+//	    	 
+//		     CoursesEntity coursesEntity1 =  	courseRepository.save(coursesEntityNew);
+//		     coursesEntityList.add(coursesEntity1);
 
 
 	     }else {

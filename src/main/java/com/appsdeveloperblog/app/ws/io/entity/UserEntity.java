@@ -88,6 +88,7 @@ public class UserEntity implements Serializable{
     inverseJoinColumns = {
             @JoinColumn(name = "course_id", referencedColumnName = "id",
                     nullable = false, updatable = false)})
+	
 //    private Set<CoursesEntity> courses = new HashSet<>();
 	private List<CoursesEntity> courses;
 	

@@ -124,12 +124,14 @@ public class UserServiceImpl implements UserService {
 
 			} else {
 
-				coursesEntity.setCourseId(utils.generateAddressId(30));
+				coursesEntity.setCourseId(coursesEntity.getCourseId());
 				CourseDto courseDto2 = modelMapper.map(coursesEntity, CourseDto.class);
 				userDto.getCourses().set(i, courseDto2);
 
 			}
 		}
+		
+		
 
 //		UserEntity userEnity = new UserEntity();
 //		BeanUtils.copyProperties(userDto, userEnity);

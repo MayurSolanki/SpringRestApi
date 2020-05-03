@@ -80,6 +80,7 @@ public class DepartmentEntity implements Serializable{
 	
 	
 
+	
 //	public UserEntity getUserEntityDetailss() {
 //		return userEntityDetailss;
 //	}

@@ -174,7 +174,7 @@ public class UserController {
 		userDetailResponseModel = modelMapper.map(createdUserDto, UserDetailsResponseModel.class);
 		
 		// Jackson mapping
-		  SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("userId,firstName","lastName","email","department","addresses");
+		   SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("userId,firstName","lastName","email","department","addresses");
 		    FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter", filter);
 
 		    MappingJacksonValue mapping = new MappingJacksonValue(userDetailResponseModel);
