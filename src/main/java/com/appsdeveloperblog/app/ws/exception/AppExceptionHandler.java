@@ -41,8 +41,6 @@ public class AppExceptionHandler {
 
 	// This method will handle Common null pointer exception
 	@ExceptionHandler(value = { Exception.class })	
-	// This method will handle Common null pointer exception
-	@ExceptionHandler(value = {Exception.class })
 	public ResponseEntity<Object> handleUserServiceException(Exception exception, WebRequest webRequest) {
 
 		CustomErrorMessage customErrorMessage = new CustomErrorMessage(new Date(), exception.getMessage());

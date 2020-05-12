@@ -1,18 +1,5 @@
 package com.appsdeveloperblog.app.ws.ui.controller;
 
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.appsdeveloperblog.app.ws.service.DepartmentService;
-import com.appsdeveloperblog.app.ws.shared.dto.DepartmentDto;
-import com.appsdeveloperblog.app.ws.ui.model.request.DepartmentRequestModel;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +25,7 @@ import com.appsdeveloperblog.app.ws.ui.model.request.DepartmentRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.DepartmentResponseModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsResponseModel;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 @RestController
@@ -47,7 +35,6 @@ public class DepartmentController {
 	@Autowired
 	DepartmentService departmentService;
 	
-
 	@Autowired
 	UserService userService;
 	
@@ -72,7 +59,6 @@ public class DepartmentController {
 	}
 	
 	
-
 	@RequestMapping(value = "user/{userId}",produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE} , method = RequestMethod.PUT)
 //	@PutMapping(path = "",)
 	public MappingJacksonValue updateUserDepartment(@PathVariable String userId, @RequestBody DepartmentRequestModel departmentRequestModel) {

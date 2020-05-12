@@ -2,18 +2,11 @@ package com.appsdeveloperblog.app.ws.ui.controller;
 
 
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,7 +27,6 @@ import com.appsdeveloperblog.app.ws.shared.dto.PublisherDto;
 import com.appsdeveloperblog.app.ws.ui.model.request.BookRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.request.PublisherRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.BookResponseModel;
-
 import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -45,12 +37,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 public class BookController {
 	//https://hellokoding.com/jpa-many-to-many-extra-columns-relationship-mapping-example-with-spring-boot-hsql/
-
-
-	
-
 	//https://hellokoding.com/jpa-many-to-many-relationship-mapping-example-with-spring-boot-maven-and-mysql/
-
 
 	@Autowired
 	BookService bookService;
@@ -59,7 +46,6 @@ public class BookController {
 	@Autowired
 	PublisherService publisherService;
 	
-
 
 	@RequestMapping(value = "/publishers", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE }, consumes = {
 			MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.POST)
@@ -73,26 +59,6 @@ public class BookController {
 		   for (PublisherRequestModel publisherRequestModel : bookRequestModel.getPublisher()) {
 			     PublisherDto publisherDto =  modelMapper.map(publisherRequestModel, PublisherDto.class);
 				 bookDto.getPublisher().add(publisherDto);
-
-		   }
-		
-		
-	    BookDto bookDto2  = bookService.addBook(bookDto);
-	    
-	    BookDto bookDtoReturn = new BookDto();
-	    	
-	    for (BookPublisherDto bookPublisherDto : bookDto2.getBookPublishers()) {
-	    	
-	    	bookDtoReturn.setBookId(bookPublisherDto.getBook().getBookId());
-	    	bookDtoReturn.setBookName(bookPublisherDto.getBook().getBookName());
-	    	bookDtoReturn.getPublisher().add(bookPublisherDto.getPublisher());
-	    	
-
-		}
-	 
-	    
-	    
-
 		   }
 		
 		
@@ -142,7 +108,6 @@ public class BookController {
 		return bookResponseModel;
 
 	}
-
 	
 	// All Books Of Specific Publisher
 	

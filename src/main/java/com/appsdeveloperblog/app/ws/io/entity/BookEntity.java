@@ -11,6 +11,7 @@ import java.util.Set;
 
 @Entity(name = "book")
 public class BookEntity{
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -19,7 +20,6 @@ public class BookEntity{
     @Column(nullable = false)
 	private String bookId;
 
-    private String bookName;
     @Size(max = 20)
     @Column(nullable = false, unique = true)
     private String bookName;

@@ -1,7 +1,5 @@
 package com.appsdeveloperblog.app.ws.service.impl;
 
-import java.util.Date;
-import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -12,7 +10,6 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -29,12 +26,11 @@ import com.appsdeveloperblog.app.ws.shared.dto.BookDto;
 import com.appsdeveloperblog.app.ws.shared.dto.BookPublisherDto;
 import com.appsdeveloperblog.app.ws.shared.dto.CourseDto;
 import com.appsdeveloperblog.app.ws.shared.dto.PublisherDto;
-import com.appsdeveloperblog.app.ws.shared.dto.Utils;
-import com.appsdeveloperblog.app.ws.ui.controller.UserController;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
 import com.appsdeveloperblog.app.ws.shared.dto.Utils;
 import com.appsdeveloperblog.app.ws.ui.controller.UserController;
 import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
+
 import javassist.expr.NewArray;
 
 @Service
@@ -53,9 +49,6 @@ public class BookServiceImpl implements BookService{
 	Utils utils;
 
 	@Override
-	public BookDto addBook(BookDto bookDto) {
-		
-		      // Prepare Book Entity
 	public BookDto addBookPublishers(BookDto bookDto)  {
 		
 		 // add New Book, So check If exist  or not
@@ -73,11 +66,6 @@ public class BookServiceImpl implements BookService{
 		 
 		 for(PublisherDto publisherDto : bookDto.getPublisher()) {
 			 
-			 
-			 PublisherEntity   publisherEntity = new PublisherEntity();
-			 publisherEntity.setPublisherId(utils.generateAddressId(30));
-			 publisherEntity.setPublisherName(publisherDto.getPublisherName());
-	    	
 	    	
 			 
 			 PublisherEntity publisherEntityFromDb =  publisherRepository.findByPublisherName(publisherDto.getPublisherName());
@@ -122,7 +110,6 @@ public class BookServiceImpl implements BookService{
                 
                 logger.debug(bookPublisherDto.toString());         		
                 
-		}   
 	      }   
 		 
 
@@ -134,8 +121,6 @@ public class BookServiceImpl implements BookService{
 		
 		return bookDto2;
 	}
-
-
 
 	@Override
 	public BookDto updateBook(String BookId) {

@@ -5,8 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import com.appsdeveloperblog.app.ws.io.entity.BookEntity;
 
-@Repository
-public interface BookRepository extends CrudRepository<BookEntity, Long> {
 
 import java.lang.String;
 import java.util.List;
