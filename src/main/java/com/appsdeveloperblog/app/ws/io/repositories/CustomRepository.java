@@ -8,8 +8,9 @@ public interface CustomRepository {
 	
 	List<Object[]>  findByDepartmentNameCustom(String DepartmentName);
 	
-	List<Object[]>  findBooksOfPublisher(String publisherId);
+	List<Object[]>  findAllBooksOfPublisher(String publisherId);
 
-	
+	List<Object[]>  findAllPublisherOfBook(String bookName);
+
 
 }

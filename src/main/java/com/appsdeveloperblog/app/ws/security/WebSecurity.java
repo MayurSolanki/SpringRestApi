@@ -47,6 +47,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
       	.permitAll() 
       	.antMatchers(HttpMethod.GET,"/localhost/**")    
       	.permitAll() 
+      	.antMatchers(HttpMethod.GET,"/mobile-app-ws/**")    
+      	.permitAll() 
     	.anyRequest().authenticated() // any other request should be authenticated
       	.and()
       	.addFilter(getAuthenticationFilter())

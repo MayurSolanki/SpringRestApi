@@ -1,5 +1,8 @@
 package com.appsdeveloperblog.app.ws.ui.model.response;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
+@JsonFilter("PublisherResponseFilter")
 public class PublisherResponseModel {
 	
 	 String publisherId;

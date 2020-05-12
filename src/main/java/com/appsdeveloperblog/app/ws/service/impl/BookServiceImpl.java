@@ -160,15 +160,16 @@ public class BookServiceImpl implements BookService{
 	public List<BookDto> findBooksOfPublisher(String publisherId) {
 		
 		List<BookDto> bookDtos = new ArrayList<BookDto>();
-		List<Object[]>  bookListOfPublisher =    bookRepository.findBooksOfPublisher(publisherId);
+		List<Object[]>  bookListOfPublisher =    bookRepository.findAllBooksOfPublisher(publisherId);
 		       
 				
 				
 		    	for(int i =0; i < bookListOfPublisher.size() ;i++) {
+		   		    Object[] object = bookListOfPublisher.get(i);
+
 		    		BookDto bookDto = new  BookDto();
-		    		Object[] obj = bookListOfPublisher.get(i);
-		    		bookDto.setBookId((String.valueOf(obj[0])));
-		    		bookDto.setBookName(String.valueOf(obj[1]));
+		    		bookDto.setBookId((String.valueOf(object[0])));
+		    		bookDto.setBookName(String.valueOf(object[1]));
 			   
 			    	bookDtos.add(bookDto);	
 		    	}
