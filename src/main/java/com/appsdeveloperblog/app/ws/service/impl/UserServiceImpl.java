@@ -1,6 +1,7 @@
 package com.appsdeveloperblog.app.ws.service.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -14,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import com.appsdeveloperblog.app.ws.SpringApplicationContext;
 import com.appsdeveloperblog.app.ws.exception.AppExceptionHandler;
 import com.appsdeveloperblog.app.ws.exception.CustomExceptionHandler;
 import com.appsdeveloperblog.app.ws.exception.UserServiceException;
@@ -28,6 +29,7 @@ import com.appsdeveloperblog.app.ws.service.UserService;
 import com.appsdeveloperblog.app.ws.shared.dto.AddressDto;
 import com.appsdeveloperblog.app.ws.shared.dto.CourseDto;
 import com.appsdeveloperblog.app.ws.shared.dto.DepartmentDto;
+import com.appsdeveloperblog.app.ws.shared.dto.UserDepartmentDto;
 import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
 import com.appsdeveloperblog.app.ws.shared.dto.Utils;
 import com.appsdeveloperblog.app.ws.ui.model.response.ErrorMessages;
@@ -55,6 +57,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDto createUser(UserDto userDto) {
+
 
 		ModelMapper modelMapper = new ModelMapper();
 
@@ -322,5 +325,33 @@ public class UserServiceImpl implements UserService {
 
 	// Password reset/update/change -- password
 	// https://stackoverflow.com/questions/11525308/changing-password-spring-security
+
+
+
+	@Override
+	public List<UserDto> findUserByDepartmentName(String departmentName) {
+		
+		List<UserDto> userDtoList = new ArrayList<UserDto>();
+//    	ModelMapper modelMapper = new ModelMapper();
+
+    	
+    	List<Object[]>  usersListByDepartment =  userRepository.findByDepartmentNameCustom(departmentName);
+		
+//	    List<UserEntity>  usersListByDepartment = new ArrayList<UserEntity>(); //userRepository.searchUserByDepartmentName(departmentName);
+		
+    	for(int i =0; i < usersListByDepartment.size() ;i++) {
+    		UserDto userDto = new  UserDto();
+    		Object[] obj = usersListByDepartment.get(i);
+    		userDto.setUserId(String.valueOf(obj[0]));
+	    	userDto.setFirstName(String.valueOf(obj[1]));
+	    	userDto.setLastName(String.valueOf(obj[2]));
+	    	userDto.setEmail(String.valueOf(obj[3]));
+	        userDtoList.add(userDto);	
+    	}
+    	
+	  
+	    
+		return userDtoList;
+	}
 
 }

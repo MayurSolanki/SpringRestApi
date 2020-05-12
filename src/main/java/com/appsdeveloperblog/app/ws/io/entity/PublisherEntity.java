@@ -9,12 +9,16 @@ import java.util.Set;
 @Entity(name="publisher")
 public class PublisherEntity {
 	
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     
+
+    @Column(nullable = false)
     private String publisherId;
 
+    @Column(nullable = false)
     private String publisherName;
 
     @OneToMany(mappedBy = "publisher")

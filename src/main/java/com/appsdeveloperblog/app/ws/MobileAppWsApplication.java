@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.appsdeveloperblog.app.ws.security.AppProperties;
+import com.appsdeveloperblog.app.ws.io.repositories.UserRepository;
+import com.appsdeveloperblog.app.ws.security.AppProperties;
+import com.appsdeveloperblog.app.ws.service.impl.UserServiceImpl;
 
 
 
@@ -42,5 +45,6 @@ public class MobileAppWsApplication extends SpringBootServletInitializer{
 	}
 	
 	
+
 	
 }

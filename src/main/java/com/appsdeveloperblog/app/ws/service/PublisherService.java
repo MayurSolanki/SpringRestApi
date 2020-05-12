@@ -1,5 +1,11 @@
 package com.appsdeveloperblog.app.ws.service;
 
-public interface PublisherService {
 
+import java.util.List;
+
+import com.appsdeveloperblog.app.ws.shared.dto.PublisherDto;
+
+public interface PublisherService {
+	
+     List<PublisherDto> getAllPublisherOfBook(String bookname);
 }

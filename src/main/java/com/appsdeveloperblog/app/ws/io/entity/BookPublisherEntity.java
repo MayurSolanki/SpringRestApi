@@ -16,7 +16,7 @@ public class BookPublisherEntity implements Serializable{
 
 	@Id
     @ManyToOne
-    @JoinColumn(name = "book_id")  // Table name _ primary column name 
+    @JoinColumn(name = "book_id")       // Table name _ primary column name 
     private BookEntity book;
 
     

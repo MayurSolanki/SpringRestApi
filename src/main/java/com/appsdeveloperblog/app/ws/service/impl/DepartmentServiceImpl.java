@@ -1,5 +1,10 @@
 package com.appsdeveloperblog.app.ws.service.impl;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +15,7 @@ import com.appsdeveloperblog.app.ws.io.repositories.DepartmentRepository;
 import com.appsdeveloperblog.app.ws.io.repositories.UserRepository;
 import com.appsdeveloperblog.app.ws.service.DepartmentService;
 import com.appsdeveloperblog.app.ws.shared.dto.DepartmentDto;
+import com.appsdeveloperblog.app.ws.shared.dto.UserDto;
 import com.appsdeveloperblog.app.ws.shared.dto.Utils;
 
 @Service
@@ -58,7 +64,7 @@ public class DepartmentServiceImpl implements DepartmentService{
 	}
 
 
-	
+
 	
 
 }

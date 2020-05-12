@@ -28,7 +28,8 @@ public interface UserService extends UserDetailsService{
 	
 	UserDto addUserDepartment(String userId,DepartmentDto departmentDto);
 	
-	
+	   List<UserDto> findUserByDepartmentName(String departmentName);
+
 	
 	
 }

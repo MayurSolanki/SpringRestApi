@@ -45,6 +45,10 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
       	.permitAll()  // all permission to post i.e sign up
       	.antMatchers(SecurityConstants.H2_CONSOLE)
       	.permitAll()  
+      	.antMatchers(HttpMethod.GET,"/localhost/**")    
+      	.permitAll() 
+      	.antMatchers(HttpMethod.GET,"/mobile-app-ws/**")    
+      	.permitAll() 
     	.anyRequest().authenticated() // any other request should be authenticated
       	.and()
       	.addFilter(getAuthenticationFilter())

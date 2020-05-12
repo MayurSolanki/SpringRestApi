@@ -199,13 +199,6 @@ public class UserEntity implements Serializable{
 		this.department = department;
 	}
 
-//	public Set<CoursesEntity> getCourses() {
-//		return courses;
-//	}
-//
-//	public void setCourses(Set<CoursesEntity> courses) {
-//		this.courses = courses;
-//	}
 
 	public List<CoursesEntity> getCourses() {
 		return courses;
@@ -224,10 +217,6 @@ public class UserEntity implements Serializable{
 	}
 
 
-
-
-	
-	
 	
 
 	

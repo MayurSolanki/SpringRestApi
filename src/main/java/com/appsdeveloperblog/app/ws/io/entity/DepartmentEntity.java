@@ -1,12 +1,13 @@
 package com.appsdeveloperblog.app.ws.io.entity;
 
 import java.io.Serializable;
-
+import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -24,7 +25,8 @@ public class DepartmentEntity implements Serializable{
 
 
 	@Id
-	@GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
 	private long id; 
 	
 	
@@ -37,14 +39,11 @@ public class DepartmentEntity implements Serializable{
 	@Column(nullable=false,length =20)
 	private String departmentType;           // Permanent OR Temporary
 	
-	
-	
-	
-//	@OneToMany(fetch = FetchType.LAZY,
-//            cascade =  CascadeType.ALL,
-//            mappedBy = "departmentRequestModel")
-//    private UserEntity userEntityDetailss;
-	
+
+	@OneToMany(fetch = FetchType.LAZY,cascade =  CascadeType.ALL,mappedBy = "department")
+	private List<UserEntity> users;
+
+		
 
 	public long getId() {
 		return id;
@@ -78,21 +77,7 @@ public class DepartmentEntity implements Serializable{
 		this.departmentType = departmentType;
 	}
 	
-	
-
-	
-//	public UserEntity getUserEntityDetailss() {
-//		return userEntityDetailss;
-//	}
-//
-//	public void setUserEntityDetailss(UserEntity userEntityDetailss) {
-//		this.userEntityDetailss = userEntityDetailss;
-//	}
 
 
-	
-	
-	
-	
-	
+
 }

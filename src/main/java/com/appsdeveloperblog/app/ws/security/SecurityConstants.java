@@ -17,6 +17,7 @@ public class SecurityConstants {
     public static final String CUSTOM_AUTHENTICATION_URL = "/users/login";
     public static final String H2_CONSOLE = "/h2-console/**";
 
+
 	
 //	public static final String TOKEN_SECRET = "jf9i4jgu83nfl0";
 	

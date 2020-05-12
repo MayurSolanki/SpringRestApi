@@ -2,6 +2,10 @@ package com.appsdeveloperblog.app.ws.io.entity;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,11 +20,28 @@ public class BookEntity{
 	private String bookId;
 
     private String bookName;
+    @Size(max = 20)
+    @Column(nullable = false, unique = true)
+    private String bookName;
+    
+    
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "posted_at")
+    private Date postedAt = new Date();
+
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_updated_at")
+    private Date lastUpdatedAt = new Date();
+    
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BookPublisherEntity> bookPublishers = new HashSet<BookPublisherEntity>();
 
-    public BookEntity() {
+   
+
+	public BookEntity() {
     }
 
 //    public BookEntity(String name) {
@@ -60,5 +81,6 @@ public class BookEntity{
 	public void setBookId(String bookId) {
 		this.bookId = bookId;
 	}
-    
+
+	    
 }

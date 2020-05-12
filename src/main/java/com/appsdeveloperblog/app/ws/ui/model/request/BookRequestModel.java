@@ -8,10 +8,9 @@ import com.appsdeveloperblog.app.ws.io.entity.BookPublisherEntity;
 public class BookRequestModel {
 
 	     private String bookName;
+
 	     private Set<PublisherRequestModel> publisher = new HashSet<PublisherRequestModel>();
 	     
-
-		
 
 		public String getBookName() {
 			return bookName;

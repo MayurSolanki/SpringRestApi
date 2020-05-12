@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpHeaders;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -36,6 +38,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+
+import com.appsdeveloperblog.app.ws.exception.CustomExceptionStatusCodeHandler;
 import com.appsdeveloperblog.app.ws.exception.UserServiceException;
 import com.appsdeveloperblog.app.ws.service.AddressService;
 import com.appsdeveloperblog.app.ws.service.AddressesService;
@@ -175,6 +179,7 @@ public class UserController {
 		
 		// Jackson mapping
 		   SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("userId,firstName","lastName","email","department","addresses");
+
 		    FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter", filter);
 
 		    MappingJacksonValue mapping = new MappingJacksonValue(userDetailResponseModel);
@@ -233,8 +238,7 @@ public class UserController {
 
 			BeanUtils.copyProperties(userDto, userDetailsResponseModel);
 
-			 FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter",
-			            SimpleBeanPropertyFilter.filterOutAllExcept("userId","firstName","lastName","email"));
+			 FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter",SimpleBeanPropertyFilter.filterOutAllExcept("userId","firstName","lastName","email"));
 			    
 				 mappingJacksonValue = new MappingJacksonValue(returnList);
 	 
@@ -371,7 +375,7 @@ public class UserController {
 		 return mapping;
 	}
 	
-	
+
 	
 	
 	@GetMapping(path="/password-reset-request", produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
@@ -393,6 +397,58 @@ public class UserController {
 		
 	}
 	
+	
+
+	// Get User By department , so  users/department/{departmentid}
+	@RequestMapping(value = "/department", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
+	public MappingJacksonValue usersByDepartment(@RequestParam String departmentName) throws Exception{
+		
+    	ModelMapper modelMapper = new ModelMapper();
+		MappingJacksonValue mappingJacksonValue = null;
+
+		List<UserDetailsResponseModel>  usersByDepartmentList = new ArrayList<UserDetailsResponseModel>();
+			                                
+		   List<UserDto>  userList = userService.findUserByDepartmentName(departmentName);
+		   
+	
+		   if(userList.isEmpty()) {
+			   
+//			   throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage()); 
+			   
+			   throw new CustomExceptionStatusCodeHandler(ErrorMessages.NO_RECORD_FOUND.getErrorMessage(), HttpStatus.NOT_FOUND);
+			   
+//			   CustomErrorMessage customErrorMessage = new CustomErrorMessage();
+//			   customErrorMessage.setMessage("no data");
+//			   customErrorMessage.setStatusCode(HttpStatus.NOT_FOUND.value());
+//			   
+			   
+//			   mappingJacksonValue = new MappingJacksonValue(customErrorMessage);
+
+			   
+			   
+			   
+		   }else {
+			   for (UserDto userDto : userList) {
+				   UserDetailsResponseModel userDetailsResponseModel =   modelMapper.map(userDto,UserDetailsResponseModel.class);
+				   
+				   FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter",
+				   SimpleBeanPropertyFilter.filterOutAllExcept("userId","firstName","lastName","email"));
+							    
+				   mappingJacksonValue = new MappingJacksonValue(usersByDepartmentList);
+					 
+				   usersByDepartmentList.add(userDetailsResponseModel);
+							   
+				  mappingJacksonValue.setFilters(filters);
+					
+			   }
+			 	
+		   }
+	   
+	  
+		
+		
+		return mappingJacksonValue;
+	}
 	
 
 }

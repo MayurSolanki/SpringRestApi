@@ -40,7 +40,9 @@ public class AppExceptionHandler {
 	}
 
 	// This method will handle Common null pointer exception
-	@ExceptionHandler(value = { Exception.class })
+	@ExceptionHandler(value = { Exception.class })	
+	// This method will handle Common null pointer exception
+	@ExceptionHandler(value = {Exception.class })
 	public ResponseEntity<Object> handleUserServiceException(Exception exception, WebRequest webRequest) {
 
 		CustomErrorMessage customErrorMessage = new CustomErrorMessage(new Date(), exception.getMessage());
@@ -48,6 +50,8 @@ public class AppExceptionHandler {
 		return new ResponseEntity<>(customErrorMessage, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
+	
+	
 
 	@ExceptionHandler(value = { CustomExceptionHandler.class }) // For not found
 	public ResponseEntity<Object> handleCustomException(CustomExceptionHandler customExceptionHandler,
@@ -63,5 +67,24 @@ public class AppExceptionHandler {
 		return new ResponseEntity<>(customErrorMessage, new HttpHeaders(), HttpStatus.NOT_FOUND);
 
 	}
+
+	
+
+	@ExceptionHandler(value = { CustomExceptionStatusCodeHandler.class }) // Resource Already Exist
+	public ResponseEntity<Object> handleCustomException(CustomExceptionStatusCodeHandler customExceptionStatusCodeHandler,
+			WebRequest webRequest) {
+
+		CustomErrorMessage customErrorMessage = new CustomErrorMessage();
+		customErrorMessage.setTimeStamp(new Date());
+		customErrorMessage.setMessage(customExceptionStatusCodeHandler.getMessage());
+		customErrorMessage.setStatusCode(customExceptionStatusCodeHandler.getHttpStatus().value());
+
+//	     if custom Object then response like be => Missing required field. Please check documentation for required fields 
+
+		return new ResponseEntity<>(customErrorMessage, new HttpHeaders(), customExceptionStatusCodeHandler.getHttpStatus());
+
+	}
+	
+	
 
 }

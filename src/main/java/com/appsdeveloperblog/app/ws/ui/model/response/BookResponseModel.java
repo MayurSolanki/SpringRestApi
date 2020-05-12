@@ -6,7 +6,9 @@ import java.util.Set;
 import com.appsdeveloperblog.app.ws.shared.dto.BookPublisherDto;
 import com.appsdeveloperblog.app.ws.shared.dto.PublisherDto;
 import com.appsdeveloperblog.app.ws.ui.model.request.PublisherRequestModel;
+import com.fasterxml.jackson.annotation.JsonFilter;
 
+@JsonFilter("BookResponseFilter")
 public class BookResponseModel {
 
 	private String bookId;
